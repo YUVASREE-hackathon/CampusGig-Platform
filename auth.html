@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusGig - Gateway</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&display=swap" rel="stylesheet"></head>
+<body class="theme-dark">
+
+    <div class="auth_container">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: var(--neon-cyan); font-weight: 800;">CampusGig 🚀</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;">Student Freelance Environment</p>
+        </div>
+
+        <div class="auth_toggle">
+            <span id="tabLogin" class="active_tab" onclick="switchAuthMode('LOGIN')">Sign In</span>
+            <span id="tabSignup" onclick="switchAuthMode('SIGNUP')">Register</span>
+        </div>
+
+        <form id="authForm" onsubmit="executeAuthAction(event)">
+            <div class="form_group" id="fullNameGroup" style="display: none;">
+                <label for="authName">Full Registration Name</label>
+                <input type="text" id="authName" placeholder="e.g., Jane Doe">
+            </div>
+
+            <div class="form_group">
+                <label for="authEmail">Academic Email Address</label>
+                <input type="email" id="authEmail" required placeholder="name@university.edu">
+            </div>
+
+            <div class="form_group" id="roleGroup" style="display: none;">
+                <label for="authRole">Core Primary Track</label>
+                <select id="authRole">
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Visual Arts & Design">Visual Arts & Design</option>
+                </select>
+            </div>
+
+            <div class="form_group">
+                <label for="authPassword">Security Account Password</label>
+                <input type="password" id="authPassword" required placeholder="••••••••">
+            </div>
+
+            <div class="checkbox_row" id="rememberMeContainer">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">Remember my profile session on this device</label>
+            </div>
+
+            <button type="submit" class="apply_btn" id="authSubmitBtn" style="width: 100%;">Access Environment</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body></html>

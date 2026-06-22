@@ -1,0 +1,518 @@
+/* Experiment 1 & 5: Basic CSS Tags, Inline, Internal, External Demo */
+/* We are focusing on External for maintainability. */
+
+/* ==========================================================================
+   CampusGig Dynamic Adaptive Theme Variables
+   ========================================================================== */
+
+/* 1. Enhanced Dark Mode Theme Token Designations */
+.theme-dark {
+    --primary-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+    --text-muted: #777777;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(30, 30, 30, 0.8);
+    --input-bg: rgba(20, 22, 32, 0.9);
+    --highlight-blue: #38bdf8;
+    --highlight-green: #00ff88;
+    --highlight-purple: #9333ea;
+    --banner-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.25) 100%);
+    --footer-bg: #0d0d0d;
+    --card-shadow: none;
+}
+
+/* 2. Premium High-Contrast Light Mode Theme Token Designations */
+.theme-light {
+    --primary-bg: #f8fafc;         /* Soft clean light slate canvas */
+    --card-bg: #ffffff;           /* Clean solid card background surfaces */
+    --text-primary: #0f172a;       /* High-contrast dark charcoal slate for text titles */
+    --text-secondary: #334155;     /* Readable charcoal grey for descriptions/subtitles */
+    --text-muted: #64748b;         /* Muted grey for metadata and hints */
+    --border-color: #e2e8f0;       /* Defined solid layout boundaries */
+    --glass-bg: rgba(255, 255, 255, 0.85); /* Premium opaque backdrop blur panel background */
+    --input-bg: #f1f5f9;           /* Recessed control backgrounds */
+    --highlight-blue: #0284c7;     /* High-visibility deep sapphire blue accent */
+    --highlight-green: #16a34a;    /* High-contrast crisp forest emerald green */
+    --highlight-purple: #7c3aed;   /* Crisp deep royal purple accent */
+    --banner-gradient: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%); /* Light clean sky banner tint */
+    --footer-bg: #e2e8f0;          /* Subtle light grey footer banner element base */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Modern box depth layering */
+}
+
+/* Reset & Base Wireframes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; /* Smooth global theme shifting loop */
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    font-family: 'Ubuntu', sans-serif;
+    overflow-x: hidden;
+}
+
+/* --- THEME TOGGLE SWITCH BUTTON STYLING --- */
+.theme_toggle_btn {
+    background: transparent;
+    border: 1px solid var(--highlight-blue);
+    color: var(--highlight-blue);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.theme_toggle_btn:hover {
+    background: var(--highlight-blue);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+/* Glassmorphism Header (FIXED: Converted to layout engine custom variables) */
+.main-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--highlight-blue);
+    animation: logo_entrance 0.8s ease-out;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 500;
+    transition: color 0.3s ease; /* Hover transition */
+}
+
+.nav-links a:hover, .nav-links a.active_page {
+    color: var(--highlight-green);
+    border-bottom: 2px solid var(--highlight-green);
+    padding-bottom: 3px;
+}
+
+/* Container & Layout */
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+/* Banner and Gradient Text Animation (FIXED: Bound to custom theme gradient shifts) */
+.banner {
+    background: var(--banner-gradient);
+    border: 1px solid var(--border-color);
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    animation: welcome_fade 1s ease;
+}
+
+@keyframes welcome_fade {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animation_gradient_text h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+}
+
+.highlight_primary {
+    color: var(--highlight-blue);
+    font-weight: 700;
+}
+
+.banner p {
+    color: var(--text-secondary) !important;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Layout for Sidebar and Grid */
+.main_content_area {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2.5rem;
+}
+
+/* Glassmorphism Sidebar (FIXED: Uses dynamic variables for solid light support) */
+.sidebar_filters {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+}
+
+.sidebar_filters h2 {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.filter_tags button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 0.8rem 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.filter_tags button.active_filter, .filter_tags button:hover {
+    background-color: rgba(56, 189, 248, 0.15);
+    color: var(--highlight-blue);
+    border-color: var(--border-color);
+    font-weight: bold;
+}
+
+/* Gig Card Style & Animation (FIXED: Fixed readability parameters across dark/light profiles) */
+.gig_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.8rem;
+    margin-top: 1.5rem;
+}
+
+.gig_card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease; /* Transitions */
+}
+
+/* Transition trigger on hover */
+.card_animation_on_hover:hover {
+    transform: translateY(-8px) scale(1.02); /* Multi-part transition */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(56, 189, 248, 0.1);
+    border-color: var(--highlight-blue);
+}
+
+.gig_card h3 {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    margin-bottom: 0.8rem;
+}
+
+.gig_desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.skill_tags span {
+    background-color: rgba(22, 163, 74, 0.1);
+    color: var(--highlight-green);
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    margin-right: 0.6rem;
+    font-weight: 700;
+}
+
+.gig_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.8rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+.budget {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--highlight-green);
+}
+
+.apply_btn {
+    background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple));
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: transform 0.2s ease, opacity 0.3s ease; /* Button transition */
+}
+
+.apply_btn:hover {
+    transform: scale(1.05); /* Transition on hover */
+    opacity: 0.95;
+}
+
+/* Keyframe Animations */
+@keyframes logo_entrance {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Global Footer (FIXED: Tied background values to dynamic theme targets) */
+.main-footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    background-color: var(--footer-bg);
+    border-top: 1px solid var(--border-color);
+    margin-top: 5rem;
+}
+
+/* ==========================================================================
+   CampusGig Supplementary Styles for Form, Profiles, and Drag-and-Drop
+   ========================================================================== */
+
+/* Split Grid for Forms & Profile layout (FIXED: Removed static dark background values) */
+.content_wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+}
+
+/* Advanced Forms Style Framework (Experiment 3) (FIXED: Standardized input properties) */
+.form_group {
+    margin-bottom: 1.5rem;
+}
+
+.form_group label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.form_group input, 
+.form_group textarea, 
+.form_group select {
+    width: 100%;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form_group input:focus, 
+.form_group textarea:focus,
+.form_group select:focus {
+    border-color: var(--highlight-blue);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+}
+
+.form_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Inline/Editable Area Framework (Experiment 3) */
+.editable_notice_board {
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(56, 189, 248, 0.08));
+    border: 1px dashed var(--highlight-purple);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.editable_notice_board:focus {
+    outline: none;
+    background: rgba(147, 51, 234, 0.12);
+    border-style: solid;
+}
+
+/* Advanced Drag & Drop Zones (Experiment 4) (FIXED: Standardized light drop environments) */
+.drop_zone_canvas {
+    border: 2px dashed var(--highlight-blue);
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    pointer-events: auto !important; /* Forces the element to register events */
+}
+
+.drop_zone_canvas.drag_over_active {
+    background-color: rgba(22, 163, 74, 0.1);
+    border-color: var(--highlight-green);
+}
+
+.drop_zone_canvas p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.drop_zone_canvas .icon_indicator {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* My Gigs Management Column Layout */
+.status_column {
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.status_badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.badge_progress { background: rgba(56, 189, 248, 0.15); color: var(--highlight-blue); }
+.badge_completed { background: rgba(22, 163, 74, 0.15); color: var(--highlight-green); }
+
+/* Profile Detail Panels */
+.profile_avatar_meta {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: var(--text-primary);
+}
+
+.profile_avatar_meta h2, .profile_avatar_meta p, .profile_avatar_meta h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+.profile_avatar_meta p {
+    color: var(--highlight-blue);
+    font-weight: 700;
+}
+
+.avatar_placeholder {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple));
+    color: #ffffff;
+    border-radius: 50%;
+    margin: 0 auto 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+}
+
+/* ==========================================================================
+   CampusGig Authentication & State Styling Extensions
+   ========================================================================== */
+
+/* Split Screen Login Container (FIXED: Standardized background variables) */
+.auth_container {
+    max-width: 450px;
+    margin: 5rem auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 3rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    animation: welcome_fade 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth_container h2, .auth_container label {
+    color: var(--text-primary);
+}
+
+.auth_toggle {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.auth_toggle span {
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+}
+
+.auth_toggle span.active_tab {
+    color: var(--highlight-blue);
+}
+
+.checkbox_row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.checkbox_row input {
+    width: auto !important;
+    cursor: pointer;
+}
+
+/* Utility Class for Hidden Elements */
+.hidden {
+    display: none !important;
+}

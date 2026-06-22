@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusGig - Developer Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+
+    <header class="main-header glassmorphism">
+        <div class="logo">
+            CampusGig 🚀
+            <span style="font-size: 0.75rem; display: block; color: var(--text-muted); font-weight: 400; margin-top: 0.2rem;">
+                Connect. Work. Earn. | Student: YUVASREE I (Reg: 2303717620522061)
+            </span>
+        </div>
+        <nav class="nav-links" style="display: flex; align-items: center;">
+            <a href="index.html" id="navBrowse">Browse Gigs</a>
+            <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
+            <a href="post-job.html" id="navPost">Post Job</a>
+            <a href="profile.html" id="navProfile" class="active_page">Profile</a>
+            <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
+            
+            <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="content_wrapper" style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem;">
+            
+            <div class="profile_avatar_meta" style="text-align: center;">
+                <div class="avatar_placeholder">CG</div>
+                <h2 id="displayProfileName">Loading User Profile...</h2>
+                <p style="color: var(--highlight-blue); font-weight: bold; margin-top: 0.2rem;" id="displayProfileRole">Processing Position Track...</p>
+                <br>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Registered Email: <span id="profileEmailDisplay" style="color: var(--text-primary);"></span></p>
+                <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Device Session Type: <strong>SessionStorage Secure Matrix Token</strong></p>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color);">
+
+            <section>
+                <h3 style="color: var(--text-primary); font-size: 1.3rem; margin-bottom: 1.5rem; border-left: 4px solid var(--highlight-blue); padding-left: 0.6rem;">
+                    Comprehensive Student Registration Portal
+                </h3>
+                <form id="labComprehensiveRegisterForm" onsubmit="event.preventDefault(); alert('🚀 Registration parameters committed to client transaction storage layer.');">
+                    <div class="form_row">
+                        <div class="form_group">
+                            <label for="profileUsername">Full Name</label>
+                            <input type="text" id="profileUsername" placeholder="Enter full name identity...">
+                        </div>
+                        <div class="form_group">
+                            <label for="regEmail">Email Address</label>
+                            <input type="email" id="regEmail" placeholder="yourname@cit.edu.in" required>
+                        </div>
+                    </div>
+
+                    <div class="form_row">
+                        <div class="form_group">
+                            <label for="regPhone">Phone Number</label>
+                            <input type="tel" id="regPhone" placeholder="Enter contact mobile number" required>
+                        </div>
+                        <div class="form_group">
+                            <label for="regPassword">Security Access Password</label>
+                            <input type="password" id="regPassword" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="form_row">
+                        <div class="form_group">
+                            <label for="regGender">Gender Demographics</label>
+                            <select id="regGender" required>
+                                <option value="">Select Gender Identity</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form_group">
+                            <label for="regDOB">Date of Birth</label>
+                            <input type="date" id="regDOB" required>
+                        </div>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="profileSpecialization">Engineering Domain Core</label>
+                        <input type="text" id="profileSpecialization" placeholder="e.g., Information Technology, Computer Science">
+                    </div>
+
+                    <div class="form_group">
+                        <label for="regAddress">Postal Residential Address</label>
+                        <textarea id="regAddress" rows="2" placeholder="Provide complete physical address parameters..." style="width: 100%; background-color: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.8rem 1rem; border-radius: 6px; font-family: inherit;" required></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button type="submit" class="apply_btn" style="flex: 1;" onclick="saveProfileToStorage()">Update Local Configuration Registry</button>
+                        <button type="reset" class="apply_btn" style="flex: 1; background: #64748b; color: #ffffff; border: none;">Reset Fields</button>
+                    </div>
+                </form>
+
+                <button class="apply_btn" style="width: 100%; margin-top: 1rem; background: transparent; border: 1px solid var(--text-muted); color: var(--text-primary);" onclick="clearCachedRegistration()">Flush Local Cache Storage</button>
+            </section>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color);">
+
+            <section id="modules-section">
+                <h3 style="color: var(--text-primary); font-size: 1.3rem; margin-bottom: 1.2rem; border-left: 4px solid var(--highlight-purple); padding-left: 0.6rem;">
+                    Application Architectural Module Registry
+                </h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; color: var(--text-secondary);">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-primary);">
+                                <th style="padding: 0.8rem 0.6rem;">Module ID</th>
+                                <th style="padding: 0.8rem 0.6rem;">Module Name</th>
+                                <th style="padding: 0.8rem 0.6rem;">Functional System Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 0.8rem 0.6rem; font-family: monospace; font-weight: bold; color: var(--highlight-blue);">MOD-01</td>
+                                <td style="padding: 0.8rem 0.6rem; font-weight: bold; color: var(--text-primary);">Auth-Sync Router</td>
+                                <td style="padding: 0.8rem 0.6rem; color: var(--text-muted);">Handles path extraction and conditional verification using localStorage user models.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 0.8rem 0.6rem; font-family: monospace; font-weight: bold; color: var(--highlight-blue);">MOD-02</td>
+                                <td style="padding: 0.8rem 0.6rem; font-weight: bold; color: var(--text-primary);">Live Broadcast Engine</td>
+                                <td style="padding: 0.8rem 0.6rem; color: var(--text-muted);">Unifies active static baseline arrays with custom storage items to feed user interfaces.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 0.8rem 0.6rem; font-family: monospace; font-weight: bold; color: var(--highlight-blue);">MOD-03</td>
+                                <td style="padding: 0.8rem 0.6rem; font-weight: bold; color: var(--text-primary);">Adaptive Theme Controller</td>
+                                <td style="padding: 0.8rem 0.6rem; color: var(--text-muted);">Tracks user preference states to toggle across Light/Dark variable palettes dynamically.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 CampusGig Portal | Designed by YUVA (Register No: 71762307061)</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

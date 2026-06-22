@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusGig - Contract Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&display=swap" rel="stylesheet"></head>
+<body class="theme-dark">
+
+    <header class="main-header glassmorphism">
+        <div class="logo">
+            CampusGig 🚀
+            <span style="font-size: 0.75rem; display: block; color: var(--text-muted); font-weight: 400; margin-top: 0.2rem;">
+                Connect. Work. Earn. | Student: YUVASREE I (Reg: 2303717620522061)
+            </span>
+        </div>
+        <nav class="nav-links" style="display: flex; align-items: center;">
+            <a href="index.html" id="navBrowse">Browse Gigs</a>
+            <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
+            <a href="post-job.html" id="navPost">Post Job</a>
+            <a href="profile.html" id="navProfile" class="active_page">Profile</a>
+            <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
+            
+            <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Your Contract Pipeline</h2>
+        <br>
+
+        <div class="main_content_area" style="grid-template-columns: 1fr;">
+            <div class="status_column">
+                <span class="status_badge badge_progress">Active Execution Contract</span>
+                <h3>Build a Python Data Scraper</h3>
+                <p class="gig_desc" style="margin-top:0.5rem;">Assigned to you. Extract key retail metrics from target domains into native structures.</p>
+                
+                <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">Submit Delivery Payload Assets:</label>
+                <div class="drop_zone_canvas" id="fileDropZone">
+                    <span class="icon_indicator">📁</span>
+                    <p id="dropZoneText">Drag and drop compressed source modules (.zip) or reports here to compile production files</p>
+                </div>
+                
+                <div class="gig_footer" style="margin-top: 1.5rem;">
+                    <span class="budget">Value: $40</span>
+                    <button class="apply_btn" id="submitArtifactBtn" onclick="submitFinalWork()">Verify and Deliver Package</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 CampusGig - An animated frontend lab project.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body></html>

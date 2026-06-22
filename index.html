@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusGig - Dynamic Freelance Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+    
+    <header class="main-header glassmorphism">
+        <div class="logo">
+            CampusGig 🚀
+            <span style="font-size: 0.75rem; display: block; color: var(--text-muted); font-weight: 400; margin-top: 0.2rem;">
+                Connect. Work. Earn. | Student: YUVASREE I (Reg: 2303717620522061)
+            </span>
+        </div>
+        <nav class="nav-links" style="display: flex; align-items: center;">
+            <a href="index.html" id="navBrowse">Browse Gigs</a>
+            <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
+            <a href="post-job.html" id="navPost">Post Job</a>
+            <a href="profile.html" id="navProfile" class="active_page">Profile</a>
+            <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
+            
+            <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        
+        <div style="margin-bottom: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; box-shadow: var(--card-shadow);">
+            <marquee behavior="scroll" direction="left" style="color: var(--highlight-blue); font-weight: 700; font-size: 0.95rem;">
+                🔥 System Notification: 3 new Python Scraping micro-gigs deployed today! | Mandatory Profile configuration registration link extended for all active campus developers. | Work securely via persistent client storage tokens.
+            </marquee>
+        </div>
+
+        <section class="banner animation_gradient_text" id="about-section">
+            <h1>Dynamic freelance <span class="highlight_primary">possibilities</span> at your college.</h1>
+            <p>Welcome to CampusGig! Fluidly connecting students with skill-based opportunities across modern engineering layouts.</p>
+            
+            <div style="margin-top: 1.8rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem; text-align: left;">
+                <div>
+                    <h4 style="color: var(--highlight-purple); font-size: 1rem; margin-bottom: 0.4rem;">🎯 Our Vision</h4>
+                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">To cultivate a decentralized campus micro-economy that prioritizes technical skill acquisition and self-reliance over rigid operational hurdles.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--highlight-green); font-size: 1rem; margin-bottom: 0.4rem;">🚀 Our Mission</h4>
+                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">Empowering technical students to construct scalable real-world work items through structured code pipelines, layouts, and data infrastructure.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard-section" style="margin-bottom: 3rem;">
+            <h2 style="margin-bottom: 1.2rem; color: var(--text-primary); font-size: 1.5rem;">Platform Metrics Control Dashboard</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem;">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Total Users</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-blue);">1,240</div>
+                </div>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Active Users</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-green);">412</div>
+                </div>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Total Revenue</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-purple);">$3,840</div>
+                </div>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Transactions</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--text-primary);">189</div>
+                </div>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Notifications</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: #f59e0b;">5 Active</div>
+                </div>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Pending Tasks</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: #ef4444;">3 Blocks</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="main_content_area">
+            <aside class="sidebar_filters glassmorphism">
+                <h2>Filters</h2>
+                <div class="filter_tags">
+                    <button class="filter_btn active_filter" onclick="filterCategory('All')">All Categories</button>
+                    <button class="filter_btn" onclick="filterCategory('Coding')">Coding</button>
+                    <button class="filter_btn" onclick="filterCategory('Design')">Design</button>
+                    <button class="filter_btn" onclick="filterCategory('Writing')">Writing</button>
+                </div>
+
+                <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+                    <h3 style="color: var(--text-primary); font-size: 1.1rem; margin-bottom: 0.6rem;">Core Features</h3>
+                    <ul style="color: var(--text-muted); padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+                        <li>Dynamic Query Filters</li>
+                        <li>Persistent Cache Sync</li>
+                        <li>Isolated Security Sandbox</li>
+                        <li>Responsive Grid Renders</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+                    <h3 style="color: var(--text-primary); font-size: 1.1rem; margin-bottom: 0.6rem;">Platform Services</h3>
+                    <ol style="color: var(--text-muted); padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+                        <li>Automated Source Reviewing</li>
+                        <li>Vector Graphics Render Pipelines</li>
+                        <li>Structured Layout Compilation</li>
+                        <li>Secure Local Storage Handlers</li>
+                    </ol>
+                </div>
+            </aside>
+
+            <section class="gig_grid_container">
+                <div class="gig_grid_header">
+                    <h2>Available Gigs</h2>
+                    <span class="view_options">View: Grid</span>
+                </div>
+
+                <div class="gig_grid" id="liveFeedContainer">
+                    <div class="gig_card card_animation_on_hover">
+                        <h3>Build a Python Data Scraper</h3>
+                        <p class="gig_desc">Extract key products from e-commerce sites.</p>
+                        <div class="skill_tags">
+                            <span>Python</span>
+                            <span>Data</span>
+                        </div>
+                        <div class="gig_footer">
+                            <span class="budget">$40</span>
+                            <button class="apply_btn" onclick="applyGig('Python Scraper')">Apply</button>
+                        </div>
+                    </div>
+
+                    <div class="gig_card card_animation_on_hover">
+                        <h3>Campus Event Logo Design</h3>
+                        <p class="gig_desc">Creative minimalist logo for TechFest.</p>
+                        <div class="skill_tags">
+                            <span>Logo Design</span>
+                            <span>Figma</span>
+                        </div>
+                        <div class="gig_footer">
+                            <span class="budget">$25</span>
+                            <button class="apply_btn" onclick="applyGig('Event Logo')">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section id="contact-section" style="margin-top: 4rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow);">
+            <h2 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.4rem;">Contact Information Matrix</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+                <p>📧 <strong>Email Matrix:</strong> helpdesk@cit.edu.in</p>
+                <p>📞 <strong>Phone Desk:</strong> +91 (422) 2574000</p>
+                <p>📍 <strong>Physical Address:</strong> IT Dept Block, Coimbatore Institute of Technology, TN, India</p>
+                <p>🌐 <strong>Social Infrastructure:</strong> 
+                    <a href="#" style="color: var(--highlight-blue); text-decoration: none; margin-right: 0.8rem; font-weight: bold;">GitHub</a>
+                    <a href="#" style="color: var(--highlight-blue); text-decoration: none; font-weight: bold;">LinkedIn</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 CampusGig Portal | Designed by YUVA (Register No: 71762307061)</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
