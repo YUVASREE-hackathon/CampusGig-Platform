@@ -27,6 +27,7 @@ let currentUser = JSON.parse(sessionStorage.getItem('active_user')) || {
 };
 
 // Global Bootup Operations Pipeline
+// Global Bootup Operations Pipeline
 document.addEventListener("DOMContentLoaded", () => {
     // Synchronize current user session across all page scopes
     const activeSessionState = sessionStorage.getItem('active_user');
@@ -53,8 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
     renderApplicantMyGigsPortfolio(); 
     renderNotifications();
     setupProfileDataBinding();
-});
 
+    // Fire up the real-time dynamic date & time engine
+    startLiveClock();
+});
 function syncToLocalStorage() {
     localStorage.setItem('campus_gigs', JSON.stringify(gigs));
     localStorage.setItem('campus_applications', JSON.stringify(applications));
@@ -588,6 +591,34 @@ function setupProfileDataBinding() {
     if (dRole) dRole.innerText = `${currentUser.role.toUpperCase()} ROOT SECURITY TOKEN`;
     if (dMail) dMail.innerText = currentUser.email;
 }
+/* --- DYNAMIC LIVE CLOCK ENGINE --- */
+function startLiveClock() {
+    const clockElement = document.getElementById("liveClockWidget");
+    if (!clockElement) return; // Safety exit if the widget isn't on the current page
 
+    function updateTime() {
+        const now = new Date();
+        
+        // Options to format date beautifully: e.g., "Oct 24, 2023, 4:15:02 PM"
+        const formattedDate = now.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        
+        const formattedTime = now.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+
+        clockElement.innerHTML = `📅 ${formattedDate} &nbsp;|&nbsp; ⏰ ${formattedTime}`;
+    }
+
+    // Run immediately once on load, then tick every 1000ms (1 second)
+    updateTime();
+    setInterval(updateTime, 1000);
+}
 function processLogout() { alert("Closing transmission paths."); window.location.reload(); }
 function toggleSystemTheme() { document.body.classList.toggle("theme-light"); }
