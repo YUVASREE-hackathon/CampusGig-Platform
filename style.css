@@ -22,7 +22,10 @@
     --footer-bg: #0d0d0d;
     --card-shadow: none;
 }
-
+#editableFeedbackArea:focus {
+    border: 1px solid var(--highlight-blue) !important;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+}
 /* 2. Premium High-Contrast Light Mode Theme Token Designations */
 .theme-light {
     --primary-bg: #f8fafc;         /* Soft clean light slate canvas */

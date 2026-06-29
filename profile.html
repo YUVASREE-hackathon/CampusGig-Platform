@@ -45,67 +45,122 @@
 
             <hr style="border: none; border-top: 1px solid var(--border-color);">
 
-            <section>
-                <h3 style="color: var(--text-primary); font-size: 1.3rem; margin-bottom: 1.5rem; border-left: 4px solid var(--highlight-blue); padding-left: 0.6rem;">
-                    Comprehensive Student Registration Portal
-                </h3>
-                <form id="labComprehensiveRegisterForm" onsubmit="event.preventDefault(); alert('🚀 Registration parameters committed to client transaction storage layer.');">
-                    <div class="form_row">
-                        <div class="form_group">
-                            <label for="profileUsername">Full Name</label>
-                            <input type="text" id="profileUsername" placeholder="Enter full name identity...">
-                        </div>
-                        <div class="form_group">
-                            <label for="regEmail">Email Address</label>
-                            <input type="email" id="regEmail" placeholder="yourname@cit.edu.in" required>
-                        </div>
-                    </div>
+<section>
+    <h3 style="color: var(--text-primary); font-size: 1.3rem; margin-bottom: 1.5rem; border-left: 4px solid var(--highlight-blue); padding-left: 0.6rem;">
+        Comprehensive Student Registration & Feedback Portal
+    </h3>
+    
+    <form id="labComprehensiveRegisterForm" onsubmit="event.preventDefault();">
+        
+        <div class="form_row">
+            <div class="form_group">
+                <label for="profileUsername">Full Name</label>
+                <input type="text" 
+                       id="profileUsername" 
+                       pattern="^[a-zA-Z\s]{3,50}$" 
+                       title="Name must contain only letters and spaces, and be between 3 and 50 characters long."
+                       spellcheck="true" 
+                       placeholder="Enter full name identity..." 
+                       required>
+                <span class="validation-message" style="font-size: 0.75rem; color: #ff4a4a; display: none; margin-top: 0.2rem;">Please enter a valid name (letters only, min 3 chars).</span>
+            </div>
+            <div class="form_group">
+                <label for="regEmail">Email Address</label>
+                <input type="email" id="regEmail" placeholder="yourname@cit.edu.in" required>
+                <span class="validation-message" style="font-size: 0.75rem; color: #ff4a4a; display: none; margin-top: 0.2rem;">Please enter a valid institution email address.</span>
+            </div>
+        </div>
 
-                    <div class="form_row">
-                        <div class="form_group">
-                            <label for="regPhone">Phone Number</label>
-                            <input type="tel" id="regPhone" placeholder="Enter contact mobile number" required>
-                        </div>
-                        <div class="form_group">
-                            <label for="regPassword">Security Access Password</label>
-                            <input type="password" id="regPassword" placeholder="••••••••" required>
-                        </div>
-                    </div>
+        <div class="form_row">
+            <div class="form_group">
+                <label for="regPhone">Phone Number</label>
+                <input type="tel" 
+                       id="regPhone" 
+                       pattern="^[6-9]\d{9}$" 
+                       title="Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9."
+                       placeholder="Enter 10-digit mobile number" 
+                       required>
+                <span class="validation-message" style="font-size: 0.75rem; color: #ff4a4a; display: none; margin-top: 0.2rem;">Must be a valid 10-digit number.</span>
+            </div>
+            <div class="form_group">
+                <label for="regPassword">Security Access Password</label>
+                <input type="password" id="regPassword" minlength="8" placeholder="••••••••" required>
+                <span class="validation-message" style="font-size: 0.75rem; color: #ff4a4a; display: none; margin-top: 0.2rem;">Password must be at least 8 characters long.</span>
+            </div>
+        </div>
 
-                    <div class="form_row">
-                        <div class="form_group">
-                            <label for="regGender">Gender Demographics</label>
-                            <select id="regGender" required>
-                                <option value="">Select Gender Identity</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form_group">
-                            <label for="regDOB">Date of Birth</label>
-                            <input type="date" id="regDOB" required>
-                        </div>
-                    </div>
+        <div class="form_row">
+            <div class="form_group">
+                <label for="regGender">Gender Demographics</label>
+                <select id="regGender" required>
+                    <option value="">Select Gender Identity</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form_group">
+                <label for="regDOB">Date of Birth</label>
+                <input type="date" id="regDOB" required>
+            </div>
+        </div>
 
-                    <div class="form_group">
-                        <label for="profileSpecialization">Engineering Domain Core</label>
-                        <input type="text" id="profileSpecialization" placeholder="e.g., Information Technology, Computer Science">
-                    </div>
+        <div class="form_group">
+            <label for="profileSpecialization">Engineering Domain Core</label>
+            <input type="text" id="profileSpecialization" placeholder="e.g., Information Technology, Computer Science" required>
+        </div>
 
-                    <div class="form_group">
-                        <label for="regAddress">Postal Residential Address</label>
-                        <textarea id="regAddress" rows="2" placeholder="Provide complete physical address parameters..." style="width: 100%; background-color: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.8rem 1rem; border-radius: 6px; font-family: inherit;" required></textarea>
-                    </div>
+        <div class="form_group">
+            <label for="regAddress">Postal Residential Address</label>
+            <textarea id="regAddress" rows="3" placeholder="Enter your complete multiline residential address details here..." style="width: 100%; background-color: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.8rem 1rem; border-radius: 6px; font-family: inherit; resize: vertical;" required></textarea>
+            <span class="validation-message" style="font-size: 0.75rem; color: #ff4a4a; display: none; margin-top: 0.2rem;">Address field cannot be left empty.</span>
+        </div>
 
-                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                        <button type="submit" class="apply_btn" style="flex: 1;" onclick="saveProfileToStorage()">Update Local Configuration Registry</button>
-                        <button type="reset" class="apply_btn" style="flex: 1; background: #64748b; color: #ffffff; border: none;">Reset Fields</button>
-                    </div>
-                </form>
+        <div class="form_group" style="margin-top: 1.5rem;">
+            <label style="margin-bottom: 0.5rem; display: block;">Technical Skills & Interests Portfolio (Select All That Apply)</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; background: var(--input-bg); padding: 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary);">
+                    <input type="checkbox" name="skills" value="Frontend UI/UX (HTML/CSS)" style="width: auto;"> Frontend UI/UX (HTML/CSS)
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary);">
+                    <input type="checkbox" name="skills" value="Backend Engines (Node.js/Java)" style="width: auto;"> Backend Engines (Node.js/Java)
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary);">
+                    <input type="checkbox" name="skills" value="Database Systems (SQL)" style="width: auto;"> Database Systems (SQL)
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary);">
+                    <input type="checkbox" name="skills" value="Mobile App Development" style="width: auto;"> Mobile App Development
+                </label>
+            </div>
+        </div>
 
-                <button class="apply_btn" style="width: 100%; margin-top: 1rem; background: transparent; border: 1px solid var(--text-muted); color: var(--text-primary);" onclick="clearCachedRegistration()">Flush Local Cache Storage</button>
-            </section>
+        <div class="form_group" style="margin-top: 1.5rem;">
+            <label style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Platform Feedback & Additional Comments Workspace</span>
+                <span style="font-size: 0.75rem; color: var(--highlight-blue); font-weight: bold;">✨ Native Spellcheck Active</span>
+            </label>
+            <div id="editableFeedbackArea" contenteditable="true" spellcheck="true" style="width: 100%; min-height: 110px; background-color: var(--input-bg); border: 1px dashed var(--highlight-blue); color: var(--text-primary); padding: 0.8rem 1rem; border-radius: 6px; font-family: inherit; outline: none; line-height: 1.6; margin-top: 0.4rem;">Type your evaluation comments or workspace feedback notes here. Speling errors or structural typos will show an instant red underline highlight to help you perform corrections.</div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="apply_btn" style="flex: 2; min-width: 150px;" onclick="validateAndSaveProfile()">
+                Submit Application Registry
+            </button>
+            
+            <button type="reset" class="apply_btn" style="flex: 1; min-width: 100px; background: #475569; color: #ffffff; border: none;" onclick="document.getElementById('editableFeedbackArea').innerText=''">
+                Reset Fields
+            </button>
+            
+            <button type="button" class="apply_btn" style="flex: 1; min-width: 100px; background: #dc2626; color: #ffffff; border: none;" onclick="handleCancelNavigation()">
+                Cancel Setup
+            </button>
+        </div>
+    </form>
+
+    <button class="apply_btn" style="width: 100%; margin-top: 1rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);" onclick="clearCachedRegistration()">
+        Flush Local Cache Storage
+    </button>
+</section>
 
             <hr style="border: none; border-top: 1px solid var(--border-color);">
 

@@ -55,6 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
     renderNotifications();
     setupProfileDataBinding();
 
+    // Hydrate form fields and editable biography area from localStorage cache
+    if (typeof loadSavedProfileData === "function") {
+        loadSavedProfileData();
+    }
+
     // Fire up the real-time dynamic date & time engine
     startLiveClock();
 });
@@ -619,6 +624,183 @@ function startLiveClock() {
     // Run immediately once on load, then tick every 1000ms (1 second)
     updateTime();
     setInterval(updateTime, 1000);
+}
+
+/* --- COMPREHENSIVE FORM VALIDATION ENGINE & EDITABLE STORAGE --- */
+function validateAndSaveProfile() {
+    const form = document.getElementById("labComprehensiveRegisterForm");
+    if (!form) return;
+
+    let isFormValid = true;
+    const inputs = form.querySelectorAll("input, select, textarea");
+
+    inputs.forEach(input => {
+        const messageContainer = input.parentElement.querySelector(".validation-message");
+        
+        // Use native HTML5 checkValidity interface framework
+        if (!input.checkValidity()) {
+            isFormValid = false;
+            input.style.borderColor = "#ff4a4a";
+            if (messageContainer) {
+                messageContainer.style.display = "block";
+            }
+        } else {
+            input.style.borderColor = "var(--border-color)";
+            if (messageContainer) {
+                messageContainer.style.display = "none";
+            }
+        }
+    });
+
+    if (isFormValid) {
+        // Collect variables for deep storage committing
+        const updatedProfile = {
+            name: document.getElementById("profileUsername").value,
+            email: document.getElementById("regEmail").value,
+            phone: document.getElementById("regPhone").value,
+            gender: document.getElementById("regGender").value,
+            dob: document.getElementById("regDOB").value,
+            specialization: document.getElementById("profileSpecialization").value,
+            address: document.getElementById("regAddress").value,
+            biography: document.getElementById("editableBioArea").innerHTML // Captures editable workspace structure
+        };
+
+        // Write user context array directly to disk cache
+        localStorage.setItem("campus_user_profile", JSON.stringify(updatedProfile));
+        
+        // Dynamically update upper DOM meta profiles immediately
+        if(document.getElementById("displayProfileName")) {
+            document.getElementById("displayProfileName").innerText = updatedProfile.name;
+        }
+        if(document.getElementById("profileEmailDisplay")) {
+            document.getElementById("profileEmailDisplay").innerText = updatedProfile.email;
+        }
+
+        alert("🚀 Validated registration parameters successfully committed to client transaction storage layer.");
+    } else {
+        alert("❌ Form validation failed! Please check highlighted fields for accuracy.");
+    }
+}
+
+// Automatically load cached profile records on page navigation context loops
+function loadSavedProfileData() {
+    const dataPayload = localStorage.getItem("campus_user_profile");
+    if (!dataPayload) return;
+
+    const profile = JSON.parse(dataPayload);
+    
+    if (document.getElementById("profileUsername")) document.getElementById("profileUsername").value = profile.name || "";
+    if (document.getElementById("regEmail")) document.getElementById("regEmail").value = profile.email || "";
+    if (document.getElementById("regPhone")) document.getElementById("regPhone").value = profile.phone || "";
+    if (document.getElementById("regGender")) document.getElementById("regGender").value = profile.gender || "";
+    if (document.getElementById("regDOB")) document.getElementById("regDOB").value = profile.dob || "";
+    if (document.getElementById("profileSpecialization")) document.getElementById("profileSpecialization").value = profile.specialization || "";
+    if (document.getElementById("regAddress")) document.getElementById("regAddress").value = profile.address || "";
+    if (document.getElementById("editableBioArea") && profile.biography) {
+        document.getElementById("editableBioArea").innerHTML = profile.biography;
+    }
+}
+
+// Clear cached registry memory data
+function clearCachedRegistration() {
+    localStorage.removeItem("campus_user_profile");
+    alert("Clean operation verified: Flush Local Cache Storage complete.");
+    window.location.reload();
+}
+
+/* --- COMPREHENSIVE REGISTRY PROCESSING MODULE --- */
+function validateAndSaveProfile() {
+    const form = document.getElementById("labComprehensiveRegisterForm");
+    if (!form) return;
+
+    let isFormValid = true;
+    const inputs = form.querySelectorAll("input[required], select[required], textarea[required]");
+
+    inputs.forEach(input => {
+        const messageContainer = input.parentElement.querySelector(".validation-message");
+        if (!input.checkValidity()) {
+            isFormValid = false;
+            input.style.borderColor = "#ff4a4a";
+            if (messageContainer) messageContainer.style.display = "block";
+        } else {
+            input.style.borderColor = "var(--border-color)";
+            if (messageContainer) messageContainer.style.display = "none";
+        }
+    });
+
+    if (isFormValid) {
+        // Gathering checked inputs for skills arrays
+        const checkedSkills = [];
+        document.querySelectorAll("input[name='skills']:checked").forEach(checkbox => {
+            checkedSkills.push(checkbox.value);
+        });
+
+        const updatedProfile = {
+            name: document.getElementById("profileUsername").value,
+            email: document.getElementById("regEmail").value,
+            phone: document.getElementById("regPhone").value,
+            gender: document.getElementById("regGender").value,
+            dob: document.getElementById("regDOB").value,
+            specialization: document.getElementById("profileSpecialization").value,
+            address: document.getElementById("regAddress").value,
+            skills: checkedSkills, // Array payload containing skills checkboxes
+            feedback: document.getElementById("editableFeedbackArea").innerText // Captures contenteditable text node values
+        };
+
+        localStorage.setItem("campus_user_profile", JSON.stringify(updatedProfile));
+        
+        if(document.getElementById("displayProfileName")) {
+            document.getElementById("displayProfileName").innerText = updatedProfile.name;
+        }
+        if(document.getElementById("profileEmailDisplay")) {
+            document.getElementById("profileEmailDisplay").innerText = updatedProfile.email;
+        }
+
+        alert("🚀 Registration parameters and profile feedback successfully committed to transaction storage layers.");
+    } else {
+        alert("❌ Form validation failed! Please fix your input field arrays before submitting.");
+    }
+}
+
+// Hydrates checkboxes, textareas, and contenteditable sections cleanly
+function loadSavedProfileData() {
+    const dataPayload = localStorage.getItem("campus_user_profile");
+    if (!dataPayload) return;
+
+    const profile = JSON.parse(dataPayload);
+    
+    if (document.getElementById("profileUsername")) document.getElementById("profileUsername").value = profile.name || "";
+    if (document.getElementById("regEmail")) document.getElementById("regEmail").value = profile.email || "";
+    if (document.getElementById("regPhone")) document.getElementById("regPhone").value = profile.phone || "";
+    if (document.getElementById("regGender")) document.getElementById("regGender").value = profile.gender || "";
+    if (document.getElementById("regDOB")) document.getElementById("regDOB").value = profile.dob || "";
+    if (document.getElementById("profileSpecialization")) document.getElementById("profileSpecialization").value = profile.specialization || "";
+    if (document.getElementById("regAddress")) document.getElementById("regAddress").value = profile.address || "";
+    
+    // Check back previous skill choices
+    if (profile.skills && Array.isArray(profile.skills)) {
+        document.querySelectorAll("input[name='skills']").forEach(checkbox => {
+            checkbox.checked = profile.skills.includes(checkbox.value);
+        });
+    }
+
+    // Populate editable text nodes
+    if (document.getElementById("editableFeedbackArea") && profile.feedback) {
+        document.getElementById("editableFeedbackArea").innerText = profile.feedback;
+    }
+}
+
+// Requirement 17: Cancel Action route sequence handler
+function handleCancelNavigation() {
+    if (confirm("Are you sure you want to discard your input modifications and return home?")) {
+        window.location.href = "index.html";
+    }
+}
+
+function clearCachedRegistration() {
+    localStorage.removeItem("campus_user_profile");
+    alert("Clean operation verified: Flush Local Cache Storage complete.");
+    window.location.reload();
 }
 function processLogout() { alert("Closing transmission paths."); window.location.reload(); }
 function toggleSystemTheme() { document.body.classList.toggle("theme-light"); }
