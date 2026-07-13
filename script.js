@@ -818,9 +818,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const dragSource = document.getElementById("dragSourceToken");
     const dropTarget = document.getElementById("fileDropZone"); // Matches your id in my-gigs.html
 
+    // FIX: Browsers will hijack a real-file drag-and-drop and navigate the whole
+    // tab away to open the file if the drop lands even a pixel outside the
+    // intended target. Blocking the default here on window is what stops that
+    // "page suddenly opens the file / drop silently does nothing" behavior.
+    ["dragover", "drop"].forEach(eventName => {
+        window.addEventListener(eventName, (event) => {
+            event.preventDefault();
+        });
+    });
+
     if (dragSource) {
         // Handle internal drag source element token (Requirement 5 & 7)
         dragSource.addEventListener("dragstart", (event) => {
+            event.dataTransfer.effectAllowed = "copyMove";
             event.dataTransfer.setData("text/plain", event.target.id);
             dragSource.style.opacity = "0.5";
         });
@@ -835,6 +846,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ["dragover", "dragenter"].forEach(eventName => {
             dropTarget.addEventListener(eventName, (event) => {
                 event.preventDefault();
+                event.stopPropagation();
+                event.dataTransfer.dropEffect = "copy";
                 dropTarget.classList.add("drag_over_active");
             });
         });
@@ -847,39 +860,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Requirement 7: Process the Drop Action Event
-        // Locate the 'drop' event block inside your script.js file and replace it with this:
-dropTarget.addEventListener("drop", (event) => {
-    event.preventDefault();
-    
-    const tokenId = event.dataTransfer.getData("text/plain");
-    const files = event.dataTransfer.files;
+        dropTarget.addEventListener("drop", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
 
-    // SCENARIO A: Extract dropped native files from file explorers safely
-    if (files && files.length > 0) {
-        const droppedFile = files[0];
-        
-        // 1. Success Visual updates
-        dropTarget.style.borderColor = "var(--highlight-green)";
-        document.getElementById("dropZoneIcon").textContent = "📄";
-        document.getElementById("dropZoneText").innerHTML = 
-            `<strong>✅ Native File Loaded:</strong> ${droppedFile.name} (${(droppedFile.size / 1024).toFixed(1)} KB) ready for processing!`;
-        
-        // 2. Track status in session memory state
-        sessionStorage.setItem("last_submission_status", `Uploaded file [${droppedFile.name}] via local explorer drop.`);
-        alert(`📁 File "${droppedFile.name}" recognized successfully!`);
-    } 
-    // SCENARIO B: Fallback check for browser restrictions or the internal token badge
-    else if (tokenId === "dragSourceToken" || (!tokenId && event.dataTransfer.items)) {
-        // This catch block handles local files under security contexts when .files array is blanked by the OS
-        dropTarget.style.borderColor = "var(--highlight-purple)";
-        document.getElementById("dropZoneIcon").textContent = "📦";
-        document.getElementById("dropZoneText").innerHTML = 
-            "<strong>✅ Module Package Dropped:</strong> compressed zip tracking verified successfully via sandbox system!";
-        
-        sessionStorage.setItem("last_submission_status", "Uploaded via local verification environment.");
-        alert("📦 Package accepted and verified!");
-    }
-});
+            const tokenId = event.dataTransfer.getData("text/plain");
+            const files = event.dataTransfer.files;
+
+            // SCENARIO A: Extract dropped native files from file explorers safely
+            if (files && files.length > 0) {
+                const droppedFile = files[0];
+
+                // 1. Success Visual updates
+                dropTarget.style.borderColor = "var(--highlight-green)";
+                document.getElementById("dropZoneIcon").textContent = "📄";
+                document.getElementById("dropZoneText").innerHTML =
+                    `<strong>✅ Native File Loaded:</strong> ${droppedFile.name} (${(droppedFile.size / 1024).toFixed(1)} KB) ready for processing!`;
+
+                // 2. Track status in session memory state
+                sessionStorage.setItem("last_submission_status", `Uploaded file [${droppedFile.name}] via local explorer drop.`);
+                alert(`📁 File "${droppedFile.name}" recognized successfully!`);
+            }
+            // SCENARIO B: Fallback check for browser restrictions or the internal token badge
+            else if (tokenId === "dragSourceToken" || (!tokenId && event.dataTransfer.items)) {
+                // This catch block handles local files under security contexts when .files array is blanked by the OS
+                dropTarget.style.borderColor = "var(--highlight-purple)";
+                document.getElementById("dropZoneIcon").textContent = "📦";
+                document.getElementById("dropZoneText").innerHTML =
+                    "<strong>✅ Module Package Dropped:</strong> compressed zip tracking verified successfully via sandbox system!";
+
+                sessionStorage.setItem("last_submission_status", "Uploaded via local verification environment.");
+                alert("📦 Package accepted and verified!");
+            }
+        });
     }
 });
 
