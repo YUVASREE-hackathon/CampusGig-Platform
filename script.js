@@ -330,12 +330,14 @@ function processModalFormSubmission(event) {
 /* --- DYNAMIC APPLICANT WORKSPACE RENDER ENGINE (`my-gigs.html` INTEGRATION) --- */
 function renderApplicantMyGigsPortfolio() {
     const liveFeedContainer = document.getElementById("liveFeedContainer");
-    const dynamicTracker = document.getElementById("dynamicApplicantJobsTracker") || document.querySelector(".main_content_area");
     
-    // Pick the right content container element safely
+    // Crucial Change: Only target a dedicated dynamic portfolio tracker element
+    const dynamicTracker = document.getElementById("dynamicApplicantJobsTracker");
+    
     const isMyGigsPage = window.location.pathname.includes("my-gigs.html");
     const displayContainer = isMyGigsPage ? dynamicTracker : null;
     
+    // If there is no dynamic tracker element container on the page, don't execute or clear anything!
     if (!displayContainer) return; 
 
     displayContainer.innerHTML = "";
