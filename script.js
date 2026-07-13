@@ -808,49 +808,71 @@ function clearCachedRegistration() {
    ========================================================================== */
 
 // --- Requirement 7: Implement dragstart, dragover, and drop event workflows ---
+/* ==========================================================================
+   LAB EXP: ADVANCED DRAG AND DROP WORKFLOW MODULE (REVISION)
+   ========================================================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
     const dragSource = document.getElementById("dragSourceToken");
-    const dropTarget = document.getElementById("dropTargetZone");
+    const dropTarget = document.getElementById("fileDropZone"); // Matches your id in my-gigs.html
 
-    if (dragSource && dropTarget) {
-        // Dragstart event logic handler
+    if (dragSource) {
+        // Handle internal drag source element token (Requirement 5 & 7)
         dragSource.addEventListener("dragstart", (event) => {
             event.dataTransfer.setData("text/plain", event.target.id);
             dragSource.style.opacity = "0.5";
-            dragSource.style.border = "2px solid #ffffff";
         });
 
-        // Dragend cleanup sequence
         dragSource.addEventListener("dragend", () => {
             dragSource.style.opacity = "1";
-            dragSource.style.border = "none";
+        });
+    }
+
+    if (dropTarget) {
+        // Prevent default browser behaviors for both dragover and dragenter
+        ["dragover", "dragenter"].forEach(eventName => {
+            dropTarget.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                dropTarget.classList.add("drag_over_active");
+            });
         });
 
-        // Dragover listener event routine
-        dropTarget.addEventListener("dragover", (event) => {
-            event.preventDefault(); // Crucial to allow dropping object elements
-            dropTarget.classList.add("drag_over_active");
+        // Clean up visual status classes on leave
+        ["dragleave", "drop"].forEach(eventName => {
+            dropTarget.addEventListener(eventName, () => {
+                dropTarget.classList.remove("drag_over_active");
+            });
         });
 
-        // Drag-leave panel highlight cleaner
-        dropTarget.addEventListener("dragleave", () => {
-            dropTarget.classList.remove("drag_over_active");
-        });
-
-        // Drop execution framework mapping
+        // Requirement 7: Process the Drop Action Event
         dropTarget.addEventListener("drop", (event) => {
             event.preventDefault();
-            dropTarget.classList.remove("drag_over_active");
             
             const tokenId = event.dataTransfer.getData("text/plain");
-            if (tokenId === "dragSourceToken") {
-                dropTarget.style.borderColor = "var(--highlight-green)";
-                dropTarget.style.backgroundColor = "rgba(22, 163, 74, 0.05)";
-                document.getElementById("dropZoneStatusText").innerHTML = 
-                    "<strong>✅ Success:</strong> Assignment File Archive Token Successfully Dropped & Committed!";
+            const files = event.dataTransfer.files;
+
+            // Scenario A: Check if a real external file was dropped from the OS File Manager
+            if (files && files.length > 0) {
+                const droppedFile = files[0];
                 
-                // Track dynamic state inside temporary Session Storage array framework
-                sessionStorage.setItem("last_submission_status", "Successfully Uploaded via Drag-Drop on " + new Date().toLocaleTimeString());
+                // Visual update for file drop validation success
+                dropTarget.style.borderColor = "var(--highlight-green)";
+                document.getElementById("dropZoneIcon").textContent = "📄";
+                document.getElementById("dropZoneText").innerHTML = 
+                    `<strong>✅ Native File Loaded:</strong> ${droppedFile.name} (${(droppedFile.size / 1024).toFixed(1)} KB) ready for processing!`;
+                
+                // Sync session details tracker state
+                sessionStorage.setItem("last_submission_status", `Uploaded file [${droppedFile.name}] via Desktop Explorer drop.`);
+                alert(`📁 File "${droppedFile.name}" recognized successfully!`);
+            } 
+            // Scenario B: Fallback checklist handler for the customized website token element
+            else if (tokenId === "dragSourceToken") {
+                dropTarget.style.borderColor = "var(--highlight-purple)";
+                document.getElementById("dropZoneIcon").textContent = "📦";
+                document.getElementById("dropZoneText").innerHTML = 
+                    "<strong>✅ Token Verified:</strong> internal source module package link verified successfully!";
+                
+                sessionStorage.setItem("last_submission_status", "Uploaded via internal drag token.");
             }
         });
     }
