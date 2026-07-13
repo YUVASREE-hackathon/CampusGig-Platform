@@ -33,8 +33,9 @@
         <h2>Your Contract Pipeline</h2>
         <br>
 
-        <div id="staticPipelineContainer" style="display: grid; grid-template-columns: 1fr;">
-            <div class="status_column">
+        <div id="staticPipelineContainer" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+            
+            <div class="status_column" style="margin-top: 0;">
                 <span class="status_badge badge_progress">Active Execution Contract</span>
                 <h3>Build a Python Data Scraper</h3>
                 <p class="gig_desc" style="margin-top:0.5rem;">Assigned to you. Extract key retail metrics from target domains into native structures.</p>
@@ -68,6 +69,22 @@
                     <button class="apply_btn" id="submitArtifactBtn" onclick="submitFinalWork()">Verify and Deliver Package</button>
                 </div>
             </div>
+
+            <aside class="sidebar_metrics glassmorphism" style="padding: 1.5rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px;">
+                <h3 style="color: var(--highlight-blue); margin-bottom: 1.2rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;">
+                    Contract Meta Log
+                </h3>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.8rem;">
+                    <li><strong>Assigned To:</strong> YUVASREE I</li>
+                    <li><strong>Registration No:</strong> 2303717620522061</li>
+                    <li><strong>Workspace Nodes:</strong> Sandbox Active</li>
+                    <li><strong>Protocol Tracker:</strong> Local Sync Enforced</li>
+                    <li style="margin-top: 0.5rem; padding-top: 0.8rem; border-top: 1px dashed var(--border-color); font-size: 0.8rem; color: var(--text-muted); line-height: 1.3;">
+                        💡 <em>Use this tracking dashboard to deliver active software assets straight to workspace testing matrices.</em>
+                    </li>
+                </ul>
+            </aside>
+
         </div>
 
         <div id="dynamicApplicantJobsTracker" style="margin-top: 2rem;"></div>
