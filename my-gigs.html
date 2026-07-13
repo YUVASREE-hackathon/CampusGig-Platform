@@ -1,9 +1,12 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusGig - Contract Management</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&display=swap" rel="stylesheet"></head>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+</head>
 <body class="theme-dark">
 
     <header class="main-header glassmorphism">
@@ -15,9 +18,9 @@
         </div>
         <nav class="nav-links" style="display: flex; align-items: center;">
             <a href="index.html" id="navBrowse">Browse Gigs</a>
-            <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
+            <a href="my-gigs.html" id="navMyGigs" class="active_page">My Gigs</a>
             <a href="post-job.html" id="navPost">Post Job</a>
-            <a href="profile.html" id="navProfile" class="active_page">Profile</a>
+            <a href="profile.html" id="navProfile">Profile</a>
             <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
             
             <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme">
@@ -36,9 +39,27 @@
                 <h3>Build a Python Data Scraper</h3>
                 <p class="gig_desc" style="margin-top:0.5rem;">Assigned to you. Extract key retail metrics from target domains into native structures.</p>
                 
-                <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">Submit Delivery Payload Assets:</label>
-                <div class="drop_zone_canvas" id="fileDropZone">
-                    <span class="icon_indicator">📁</span>
+                <div style="margin: 1.5rem 0; padding: 1rem; background: rgba(147, 51, 234, 0.05); border: 1px dashed var(--highlight-purple); border-radius: 6px;">
+                    <label style="color: var(--highlight-purple); font-size: 0.9rem; font-weight: bold; display: block; margin-bottom: 0.6rem;">
+                        Requirement 5: Draggable Source Token Artifact
+                    </label>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Pick up the token box badge below by holding click and drag it directly into the dashed drop area box.
+                    </p>
+                    
+                    <div id="dragSourceToken" 
+                         draggable="true" 
+                         style="width: 180px; padding: 0.7rem 1rem; background: linear-gradient(135deg, var(--highlight-purple), #7c3aed); color: #ffffff; text-align: center; border-radius: 6px; font-weight: bold; cursor: grab; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; user-select: none; box-shadow: 0 4px 10px rgba(147, 51, 234, 0.3);">
+                         <span>☰</span> scraper_source.zip
+                    </div>
+                </div>
+
+                <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">
+                    Requirement 6: Drop Target Area Container Box
+                </label>
+                
+                <div class="drop_zone_canvas" id="fileDropZone" style="margin-top: 0.5rem; transition: all 0.3s ease;">
+                    <span class="icon_indicator" id="dropZoneIcon" style="display:block; font-size: 2rem; margin-bottom: 0.5rem;">📁</span>
                     <p id="dropZoneText">Drag and drop compressed source modules (.zip) or reports here to compile production files</p>
                 </div>
                 
@@ -51,8 +72,9 @@
     </main>
 
     <footer class="main-footer">
-        <p>&copy; 2026 CampusGig - An animated frontend lab project.</p>
+        <p>&copy; 2026 CampusGig | Designed by YUVA (Register No: 2303717620522061)</p>
     </footer>
 
     <script src="script.js"></script>
-</body></html>
+</body>
+</html>

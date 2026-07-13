@@ -802,5 +802,153 @@ function clearCachedRegistration() {
     alert("Clean operation verified: Flush Local Cache Storage complete.");
     window.location.reload();
 }
+
+/* ==========================================================================
+   LAB EXP: DRAG AND DROP & CLIENT STORAGE ROUTINE MODULES
+   ========================================================================== */
+
+// --- Requirement 7: Implement dragstart, dragover, and drop event workflows ---
+document.addEventListener("DOMContentLoaded", () => {
+    const dragSource = document.getElementById("dragSourceToken");
+    const dropTarget = document.getElementById("dropTargetZone");
+
+    if (dragSource && dropTarget) {
+        // Dragstart event logic handler
+        dragSource.addEventListener("dragstart", (event) => {
+            event.dataTransfer.setData("text/plain", event.target.id);
+            dragSource.style.opacity = "0.5";
+            dragSource.style.border = "2px solid #ffffff";
+        });
+
+        // Dragend cleanup sequence
+        dragSource.addEventListener("dragend", () => {
+            dragSource.style.opacity = "1";
+            dragSource.style.border = "none";
+        });
+
+        // Dragover listener event routine
+        dropTarget.addEventListener("dragover", (event) => {
+            event.preventDefault(); // Crucial to allow dropping object elements
+            dropTarget.classList.add("drag_over_active");
+        });
+
+        // Drag-leave panel highlight cleaner
+        dropTarget.addEventListener("dragleave", () => {
+            dropTarget.classList.remove("drag_over_active");
+        });
+
+        // Drop execution framework mapping
+        dropTarget.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dropTarget.classList.remove("drag_over_active");
+            
+            const tokenId = event.dataTransfer.getData("text/plain");
+            if (tokenId === "dragSourceToken") {
+                dropTarget.style.borderColor = "var(--highlight-green)";
+                dropTarget.style.backgroundColor = "rgba(22, 163, 74, 0.05)";
+                document.getElementById("dropZoneStatusText").innerHTML = 
+                    "<strong>✅ Success:</strong> Assignment File Archive Token Successfully Dropped & Committed!";
+                
+                // Track dynamic state inside temporary Session Storage array framework
+                sessionStorage.setItem("last_submission_status", "Successfully Uploaded via Drag-Drop on " + new Date().toLocaleTimeString());
+            }
+        });
+    }
+});
+
+// --- Requirements 8 & 9: Save information via local & sessionStorage ---
+function validateAndSaveProfile() {
+    const form = document.getElementById("labComprehensiveRegisterForm");
+    if (!form) return;
+
+    // Capture standard checklist choices 
+    const checkedSkills = [];
+    document.querySelectorAll("input[name='skills']:checked").forEach(cb => checkedSkills.push(cb.value));
+
+    const updatedProfile = {
+        name: document.getElementById("profileUsername").value,
+        email: document.getElementById("regEmail").value,
+        phone: document.getElementById("regPhone").value,
+        gender: document.getElementById("regGender").value,
+        dob: document.getElementById("regDOB").value,
+        specialization: document.getElementById("profileSpecialization").value,
+        address: document.getElementById("regAddress").value,
+        skills: checkedSkills,
+        feedback: document.getElementById("editableFeedbackArea").innerText
+    };
+
+    // Requirement 8: Save Permanent Records on disk layout arrays
+    localStorage.setItem("campus_user_profile", JSON.stringify(updatedProfile));
+
+    // Requirement 9: Save Temporary State trackers inside session context layers
+    sessionStorage.setItem("active_profile_session_username", updatedProfile.name);
+    sessionStorage.setItem("last_session_interaction_timestamp", new Date().toISOString());
+
+    alert("💾 Profile configurations successfully cataloged in local cache and active session records.");
+}
+
+// --- Requirement 10: Retrieve Data and Display in a neat view container block ---
+function retrieveAndDisplayData() {
+    const localRaw = localStorage.getItem("campus_user_profile");
+    const sessionUser = sessionStorage.getItem("active_profile_session_username");
+    const dropStatus = sessionStorage.getItem("last_submission_status") || "No current uploads made this session.";
+
+    const displayContainer = document.getElementById("retrievedDataDisplayBlock");
+    const localOutput = document.getElementById("localStorageContentOutput");
+    const sessionOutput = document.getElementById("sessionStorageContentOutput");
+
+    if (!localRaw) {
+        alert("⚠️ No storage values found! Please fill out the form fields and press submit first.");
+        return;
+    }
+
+    const data = JSON.parse(localRaw);
+
+    // Render local records beautifully inside grid entries
+    localOutput.innerHTML = `
+        <div><strong>👤 Full Identity Name:</strong> ${data.name || "N/A"}</div>
+        <div><strong>📧 Correspondence Email:</strong> ${data.email || "N/A"}</div>
+        <div><strong>📞 Telephone Contact:</strong> ${data.phone || "N/A"}</div>
+        <div><strong>🧬 Gender Demographics:</strong> ${data.gender || "N/A"}</div>
+        <div><strong>📅 Birthdate Entry:</strong> ${data.dob || "N/A"}</div>
+        <div><strong>🛠️ Specialized Domain:</strong> ${data.specialization || "N/A"}</div>
+        <div style="grid-column: span 2;"><strong>📍 Residential Postal Address:</strong> ${data.address || "N/A"}</div>
+        <div style="grid-column: span 2;"><strong>🎯 Selected Interests Portfolio:</strong> ${data.skills.length > 0 ? data.skills.join(", ") : "None Chosen"}</div>
+        <div style="grid-column: span 2; background: var(--card-bg); padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">
+            <strong>📝 Feedback Log Comments:</strong><br>${data.feedback || "Empty workspace string"}
+        </div>
+    `;
+
+    // Render session storage state outputs
+    sessionOutput.innerHTML = `
+        <p><strong>👤 Current Active User Session Token:</strong> ${sessionUser || "Guest Account Profile"}</p>
+        <p><strong>📦 Workspace Drag & Drop Activity Status:</strong> ${dropStatus}</p>
+    `;
+
+    // Make the neat structural display block completely visible
+    if (displayContainer) displayContainer.classList.remove("hidden");
+}
+
+// --- Requirement 11: Clear Data Functionality Handler ---
+function clearProfileStorage() {
+    if (confirm("🚨 Are you sure you want to completely wipe all cached information matrices from this browser?")) {
+        // Clear storage layers
+        localStorage.removeItem("campus_user_profile");
+        sessionStorage.removeItem("active_profile_session_username");
+        sessionStorage.removeItem("last_submission_status");
+
+        // UI Reset updates
+        const displayContainer = document.getElementById("retrievedDataDisplayBlock");
+        if (displayContainer) displayContainer.classList.add("hidden");
+
+        const form = document.getElementById("labComprehensiveRegisterForm");
+        if (form) form.reset();
+        if (document.getElementById("editableFeedbackArea")) {
+            document.getElementById("editableFeedbackArea").innerText = "Workspace cleared.";
+        }
+
+        alert("🗑️ Local cache storage layers cleared successfully.");
+    }
+}
 function processLogout() { alert("Closing transmission paths."); window.location.reload(); }
 function toggleSystemTheme() { document.body.classList.toggle("theme-light"); }
