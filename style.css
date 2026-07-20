@@ -1,10 +1,8 @@
-/* Experiment 1 & 5: Basic CSS Tags, Inline, Internal, External Demo */
-/* We are focusing on External for maintainability. */
-
 /* ==========================================================================
-   CampusGig Dynamic Adaptive Theme Variables
+   CampusGig Dynamic Adaptive Theme Variables & Core Architecture
    ========================================================================== */
 
+/* --- REQUIREMENT 21: GLOBAL CSS VARIABLES (:root) --- */
 /* 1. Enhanced Dark Mode Theme Token Designations */
 .theme-dark {
     --primary-bg: #121212;
@@ -21,35 +19,112 @@
     --banner-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.25) 100%);
     --footer-bg: #0d0d0d;
     --card-shadow: none;
-}
-#editableFeedbackArea:focus {
-    border: 1px solid var(--highlight-blue) !important;
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
-}
-/* 2. Premium High-Contrast Light Mode Theme Token Designations */
-.theme-light {
-    --primary-bg: #f8fafc;         /* Soft clean light slate canvas */
-    --card-bg: #ffffff;           /* Clean solid card background surfaces */
-    --text-primary: #0f172a;       /* High-contrast dark charcoal slate for text titles */
-    --text-secondary: #334155;     /* Readable charcoal grey for descriptions/subtitles */
-    --text-muted: #64748b;         /* Muted grey for metadata and hints */
-    --border-color: #e2e8f0;       /* Defined solid layout boundaries */
-    --glass-bg: rgba(255, 255, 255, 0.85); /* Premium opaque backdrop blur panel background */
-    --input-bg: #f1f5f9;           /* Recessed control backgrounds */
-    --highlight-blue: #0284c7;     /* High-visibility deep sapphire blue accent */
-    --highlight-green: #16a34a;    /* High-contrast crisp forest emerald green */
-    --highlight-purple: #7c3aed;   /* Crisp deep royal purple accent */
-    --banner-gradient: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%); /* Light clean sky banner tint */
-    --footer-bg: #e2e8f0;          /* Subtle light grey footer banner element base */
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Modern box depth layering */
+    --spacing-box: 1.5rem;
 }
 
-/* Reset & Base Wireframes */
+/* 2. Premium High-Contrast Light Mode Theme Token Designations */
+.theme-light {
+    --primary-bg: #f8fafc;         
+    --card-bg: #ffffff;           
+    --text-primary: #0f172a;       
+    --text-secondary: #334155;     
+    --text-muted: #64748b;         
+    --border-color: #e2e8f0;       
+    --glass-bg: rgba(255, 255, 255, 0.85); 
+    --input-bg: #f1f5f9;           
+    --highlight-blue: #0284c7;     
+    --highlight-green: #16a34a;    
+    --highlight-purple: #7c3aed;   
+    --banner-gradient: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%); 
+    --footer-bg: #e2e8f0;          
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); 
+    --spacing-box: 1.5rem;
+}
+
+/* --- REQUIREMENT 25: CSS PSEUDO-ELEMENTS --- */
+
+/* Theme Accent Capture Selection */
+::selection {
+    background-color: var(--highlight-purple);
+    color: #ffffff;
+}
+
+/* Typographic Cap & Line Adjustments for Primary Dashboard Headers */
+.container h2::first-letter {
+    font-size: 2rem;
+    color: var(--highlight-blue);
+    font-weight: bold;
+}
+
+.container h2::first-line {
+    letter-spacing: 1px;
+}
+
+/* System Stability Badge Anchor using Before Element */
+.status_column::before {
+    content: "⚡ WORKSPACE STABLE";
+    display: block;
+    font-size: 0.7rem;
+    color: var(--highlight-blue);
+    margin-bottom: 0.5rem;
+    opacity: 0.6;
+    font-weight: 700;
+}
+
+/* Accent Design Bars applied directly to Custom Display Panels */
+.stats-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--highlight-blue), var(--highlight-purple));
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* --- REQUIREMENT 32: PURE CSS TOOLTIP UTILITY MATRIX --- */
+[data-tooltip] {
+    position: relative;
+    cursor: pointer;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    padding: 0.4rem 0.8rem;
+    background: #1e293b;
+    color: #ffffff;
+    font-size: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-in-out;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    font-weight: 400;
+}
+
+[data-tooltip]:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+}
+
+/* ==========================================================================
+   Reset & Base Global Wireframes
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: background 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; /* Smooth global theme shifting loop */
+    transition: background 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 body {
@@ -82,7 +157,7 @@ body {
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
 }
 
-/* Glassmorphism Header (FIXED: Converted to layout engine custom variables) */
+/* Glassmorphism Navigation Header */
 .main-header {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -114,7 +189,7 @@ body {
     text-decoration: none;
     margin-left: 2rem;
     font-weight: 500;
-    transition: color 0.3s ease; /* Hover transition */
+    transition: color 0.3s ease;
 }
 
 .nav-links a:hover, .nav-links a.active_page {
@@ -123,14 +198,14 @@ body {
     padding-bottom: 3px;
 }
 
-/* Container & Layout */
+/* Container Frameworks */
 .container {
     max-width: 1300px;
     margin: 0 auto;
     padding: 3rem 1.5rem;
 }
 
-/* Banner and Gradient Text Animation (FIXED: Bound to custom theme gradient shifts) */
+/* Platform Promotional Welcome Banner */
 .banner {
     background: var(--banner-gradient);
     border: 1px solid var(--border-color);
@@ -161,14 +236,13 @@ body {
     font-size: 1.1rem;
 }
 
-/* Layout for Sidebar and Grid */
+/* Main Adaptive Workspace Configurations */
 .main_content_area {
     display: grid;
     grid-template-columns: 280px 1fr;
     gap: 2.5rem;
 }
 
-/* Glassmorphism Sidebar (FIXED: Uses dynamic variables for solid light support) */
 .sidebar_filters {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -205,7 +279,7 @@ body {
     font-weight: bold;
 }
 
-/* Gig Card Style & Animation (FIXED: Fixed readability parameters across dark/light profiles) */
+/* Responsive Adaptive Dashboard Components */
 .gig_grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -221,12 +295,11 @@ body {
     position: relative;
     overflow: hidden;
     box-shadow: var(--card-shadow);
-    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease; /* Transitions */
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
-/* Transition trigger on hover */
 .card_animation_on_hover:hover {
-    transform: translateY(-8px) scale(1.02); /* Multi-part transition */
+    transform: translateY(-8px) scale(1.02);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(56, 189, 248, 0.1);
     border-color: var(--highlight-blue);
 }
@@ -278,21 +351,20 @@ body {
     cursor: pointer;
     font-weight: 700;
     font-size: 1rem;
-    transition: transform 0.2s ease, opacity 0.3s ease; /* Button transition */
+    transition: transform 0.2s ease, opacity 0.3s ease;
 }
 
 .apply_btn:hover {
-    transform: scale(1.05); /* Transition on hover */
+    transform: scale(1.05);
     opacity: 0.95;
 }
 
-/* Keyframe Animations */
+/* Animations Base */
 @keyframes logo_entrance {
     from { opacity: 0; transform: translateX(-30px); }
     to { opacity: 1; transform: translateX(0); }
 }
 
-/* Global Footer (FIXED: Tied background values to dynamic theme targets) */
 .main-footer {
     text-align: center;
     padding: 2rem;
@@ -303,10 +375,10 @@ body {
 }
 
 /* ==========================================================================
-   CampusGig Supplementary Styles for Form, Profiles, and Drag-and-Drop
+   CampusGig Supplementary Interactive Controls Framework
    ========================================================================== */
 
-/* Split Grid for Forms & Profile layout (FIXED: Removed static dark background values) */
+/* Profile Custom Display Arrays */
 .content_wrapper {
     display: grid;
     grid-template-columns: 1fr;
@@ -319,7 +391,6 @@ body {
     box-shadow: var(--card-shadow);
 }
 
-/* Advanced Forms Style Framework (Experiment 3) (FIXED: Standardized input properties) */
 .form_group {
     margin-bottom: 1.5rem;
 }
@@ -360,7 +431,7 @@ body {
     gap: 1.5rem;
 }
 
-/* Inline/Editable Area Framework (Experiment 3) */
+/* Editable Workspace Feedback System */
 .editable_notice_board {
     background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(56, 189, 248, 0.08));
     border: 1px dashed var(--highlight-purple);
@@ -379,7 +450,12 @@ body {
     border-style: solid;
 }
 
-/* Advanced Drag & Drop Zones (Experiment 4) (FIXED: Standardized light drop environments) */
+#editableFeedbackArea:focus {
+    border: 1px solid var(--highlight-blue) !important;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+}
+
+/* Drag & Drop Dynamic Viewport Containers */
 .drop_zone_canvas {
     border: 2px dashed var(--highlight-blue);
     background-color: var(--input-bg);
@@ -389,7 +465,7 @@ body {
     cursor: pointer;
     margin-top: 1rem;
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    pointer-events: auto !important; /* Forces the element to register events */
+    pointer-events: auto !important;
 }
 
 .drop_zone_canvas.drag_over_active {
@@ -408,7 +484,6 @@ body {
     display: block;
 }
 
-/* My Gigs Management Column Layout */
 .status_column {
     background-color: var(--input-bg);
     border-radius: 8px;
@@ -429,7 +504,6 @@ body {
 .badge_progress { background: rgba(56, 189, 248, 0.15); color: var(--highlight-blue); }
 .badge_completed { background: rgba(22, 163, 74, 0.15); color: var(--highlight-green); }
 
-/* Profile Detail Panels */
 .profile_avatar_meta {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -461,11 +535,7 @@ body {
     box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
 }
 
-/* ==========================================================================
-   CampusGig Authentication & State Styling Extensions
-   ========================================================================== */
-
-/* Split Screen Login Container (FIXED: Standardized background variables) */
+/* Authentication Layout Wrappers */
 .auth_container {
     max-width: 450px;
     margin: 5rem auto;
@@ -515,7 +585,6 @@ body {
     cursor: pointer;
 }
 
-/* Utility Class for Hidden Elements */
 .hidden {
     display: none !important;
 }

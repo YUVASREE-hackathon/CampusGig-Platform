@@ -990,5 +990,46 @@ function clearProfileStorage() {
         alert("🗑️ Local cache storage layers cleared successfully.");
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // --- REQUIREMENT 5: ASYNCHRONOUS DATA COUNTER ENGINE ---
+    const counterElements = document.querySelectorAll(".counter-metric");
+    
+    counterElements.forEach(counter => {
+        const targetValue = parseInt(counter.getAttribute("data-target"), 10);
+        const engineDuration = 1500; // Animation lifecycle run window in milliseconds
+        const frameStepTime = Math.max(Math.floor(engineDuration / targetValue), 15);
+        let activeValue = 0;
+        
+        const runtimeProgressLoop = setInterval(() => {
+            activeValue += Math.ceil(targetValue / 100); // Scale steps fluidly
+            if (activeValue >= targetValue) {
+                counter.textContent = targetValue;
+                clearInterval(runtimeProgressLoop);
+            } else {
+                counter.textContent = activeValue;
+            }
+        }, frameStepTime);
+    });
+
+    // --- REQUIREMENT 16: VIEWPORT SCROLL ACTION INTERCEPTOR ---
+    const topNavigationButton = document.getElementById("scrollToTopBtn");
+
+    window.addEventListener("scroll", () => {
+        // Toggle absolute display parameter if user passes 300px down canvas frame
+        if (window.scrollY > 300) {
+            topNavigationButton.style.display = "flex";
+        } else {
+            topNavigationButton.style.display = "none";
+        }
+    });
+
+    topNavigationButton.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+});
 function processLogout() { alert("Closing transmission paths."); window.location.reload(); }
 function toggleSystemTheme() { document.body.classList.toggle("theme-light"); }
