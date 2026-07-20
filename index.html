@@ -9,42 +9,46 @@
     
     <!-- Injection of Custom Glassmorphism Tooltip CSS Engine Rule Layers -->
     <style>
-        [data-tooltip] {
-            position: relative;
-            cursor: pointer;
-        }
-        [data-tooltip]::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%) translateY(4px);
-            background: rgba(30, 41, 59, 0.95);
-            color: #f8fafc;
-            padding: 0.5rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-family: 'Ubuntu', sans-serif;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            pointer-events: none;
-        }
-        [data-tooltip]:hover::after {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-        /* Top placement modification overrides for header elements */
-        .nav-links [data-tooltip]::after {
-            bottom: auto;
-            top: 135%;
-        }
+/* 1. Tooltip Base Setup on the Card Wrapper Container */
+[data-tooltip] {
+    position: relative;
+    cursor: pointer;
+}
+
+/* 2. CRITICAL SAFEGUARD: Stop child text nodes from double-firing the hover event */
+[data-tooltip] * {
+    pointer-events: none !important;
+}
+
+/* 3. Tooltip Popup Box Presentation Layer */
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(30, 41, 59, 0.95);
+    color: #f8fafc;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 4. Smooth Transition Transition on Hover States */
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
     </style>
 </head>
 <body class="theme-dark">
