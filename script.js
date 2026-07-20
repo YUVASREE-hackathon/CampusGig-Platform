@@ -834,18 +834,55 @@ function startLiveClock() {
     setInterval(updateTime, 1000);
 }
 
+/* ==========================================================================
+   DYNAMIC REAL-TIME COUNTER METRIC ENGINE
+   ========================================================================== */
 function initializeAsynchronousCounters() {
+    // 1. Refresh live local arrays from storage layers
+    const liveGigs = JSON.parse(localStorage.getItem('campus_gigs')) || defaultGigs;
+    const liveApps = JSON.parse(localStorage.getItem('campus_applications')) || [];
+    
+    // 2. Calculate true metric values based on data states
+    let totalOpenGigs = liveGigs.length;
+    let activeCoops = liveApps.filter(app => app.status === "Accepted").length;
+    
+    // Calculate simulated earnings ($40 baseline per accepted app or total completed budget)
+    let totalEarnings = liveApps
+        .filter(app => app.status === "Accepted")
+        .reduce((sum, app) => {
+            const match = liveGigs.find(g => g.id === app.jobId);
+            return sum + (match ? match.budget : 40);
+        }, 0);
+
+    // 3. Target DOM elements by their respective layout IDs
+    const openGigsElement = document.getElementById("counterOpenGigs");
+    const activeCoopsElement = document.getElementById("counterActiveCoops");
+    const earningsElement = document.getElementById("counterEarnings");
+
+    // 4. Update the element target properties dynamically
+    if (openGigsElement) openGigsElement.setAttribute("data-target", totalOpenGigs);
+    if (activeCoopsElement) activeCoopsElement.setAttribute("data-target", activeCoops);
+    if (earningsElement) earningsElement.setAttribute("data-target", totalEarnings);
+
+    // 5. Run the fluid numeric counting animation
     const counterElements = document.querySelectorAll(".counter-metric");
     counterElements.forEach(counter => {
-        const targetValue = parseInt(counter.getAttribute("data-target"), 10);
-        const engineDuration = 1500; 
-        const frameStepTime = Math.max(Math.floor(engineDuration / targetValue), 15);
+        const targetValue = parseInt(counter.getAttribute("data-target"), 10) || 0;
+        
+        if (targetValue === 0) {
+            counter.textContent = "0";
+            return;
+        }
+
+        const engineDuration = 1000; // 1-second animation execution window
+        const frameStepTime = 20;
         let activeValue = 0;
+        const increment = Math.ceil(targetValue / (engineDuration / frameStepTime));
         
         const runtimeProgressLoop = setInterval(() => {
-            activeValue += Math.ceil(targetValue / 100); 
+            activeValue += increment; 
             if (activeValue >= targetValue) {
-                counter.textContent = targetValue;
+                counter.textContent = counter.id === "counterEarnings" ? `${targetValue}` : targetValue;
                 clearInterval(runtimeProgressLoop);
             } else {
                 counter.textContent = activeValue;

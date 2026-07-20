@@ -28,9 +28,11 @@
             </button>
         </nav>
     </header>
-<div id="liveClockWidget" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); background: var(--input-bg); padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); display: inline-block; margin: 0.5rem 0;">
-    📅 Loading system time...
-</div>
+
+    <div id="liveClockWidget" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); background: var(--input-bg); padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); display: inline-block; margin: 0.5rem 0;">
+        📅 Loading system time...
+    </div>
+
     <main class="container">
         
         <div style="margin-bottom: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; box-shadow: var(--card-shadow);">
@@ -55,6 +57,7 @@
             </div>
         </section>
 
+        <!-- Platform Metrics Control Dashboard Area -->
         <section id="dashboard-section" style="margin-bottom: 3rem;">
             <h2 style="margin-bottom: 1.2rem; color: var(--text-primary); font-size: 1.5rem;">Platform Metrics Control Dashboard</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem;">
@@ -123,6 +126,7 @@
                 </div>
 
                 <div class="gig_grid" id="liveFeedContainer">
+                    <!-- Dynamic client data overrides placeholders during system setup execution -->
                     <div class="gig_card card_animation_on_hover">
                         <h3>Build a Python Data Scraper</h3>
                         <p class="gig_desc">Extract key products from e-commerce sites.</p>
@@ -135,68 +139,57 @@
                             <button class="apply_btn" onclick="applyGig('Python Scraper')">Apply</button>
                         </div>
                     </div>
-
-                    <div class="gig_card card_animation_on_hover">
-                        <h3>Campus Event Logo Design</h3>
-                        <p class="gig_desc">Creative minimalist logo for TechFest.</p>
-                        <div class="skill_tags">
-                            <span>Logo Design</span>
-                            <span>Figma</span>
-                        </div>
-                        <div class="gig_footer">
-                            <span class="budget">$25</span>
-                            <button class="apply_btn" onclick="applyGig('Event Logo')">Apply</button>
-                        </div>
-                    </div>
                 </div>
             </section>
         </div>
-<!-- --- UPDATED REQUIREMENT 5: ROLE-ADAPTIVE STATISTICS VIEW MATRIX --- -->
-<section class="stats-grid" id="statisticsDisplayGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-    <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Today's Bidders</p>
-        <h3 class="counter-metric" data-target="142" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-    <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Active Compilations</p>
-        <h3 class="counter-metric" data-target="89" style="font-size: 2rem; color: var(--highlight-blue); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-    <!-- 💡 ADDED ID MARKER FOR ROLE-BASED VISIBILITY FILTERING -->
-    <div class="stats-card" id="earningsCard" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Total Earnings ($)</p>
-        <h3 class="counter-metric" data-target="1250" style="font-size: 2rem; color: var(--highlight-purple); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-    <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Open Gig Postings</p>
-        <h3 class="counter-metric" data-target="34" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-</section>
-<section class="contact-section" style="margin-top: 3rem; padding: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px;">
-    <h3 style="color: var(--highlight-blue); margin-bottom: 1.5rem;">CampusGig Engineering Hub</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; min-width: 280px;">
-        <div>
-            <p style="color: var(--text-main); margin: 0 0 0.5rem 0;"><strong>Address:</strong> Tech Core Block C, Lab 4, University Campus</p>
-            <p style="color: var(--text-main); margin: 0 0 0.5rem 0;"><strong>Support Line:</strong> +91 98765 43210</p>
-            <p style="color: var(--text-main); margin: 0 0 1.5rem 0;"><strong>Help Desk:</strong> yuva.dev.support@campusgig.edu</p>
-            <div style="display: flex; gap: 1rem;">
-                <a href="#" style="color: var(--highlight-purple); text-decoration: none; font-size: 0.9rem;">GitHub Net</a>
-                <a href="#" style="color: var(--highlight-purple); text-decoration: none; font-size: 0.9rem;">Developer Slack</a>
-            </div>
-        </div>
-        <div>
-            <!-- Google Maps Static/Interactive Reference Container Frame -->
-            <div style="width: 100%; height: 150px; background: #334155; border-radius: 6px; overflow: hidden; position: relative;">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.8415797378775!2d80.2185!3d13.0475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDAyJzUxLjAiTiA4MMKwMTMnMDYuNiJF!5e0!3m2!1sen!2sin!4v1625000000000!5m2!1sen!2sin" 
-                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- --- REQUIREMENT 16: SCROLL TO TOP UI ANCHOR --- -->
-<button id="scrollToTopBtn" style="position: fixed; bottom: 2rem; right: 2rem; width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple)); color: #ffffff; border: none; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1000; transition: transform 0.2s;">
-    ↑
-</button>
+        <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER -->
+        <section class="stats-grid" id="statisticsDisplayGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Today's Bidders</p>
+                <h3 id="counterBidders" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+            
+            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Active Compilations</p>
+                <h3 id="counterCompilations" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-blue); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+            
+            <div class="stats-card" id="earningsCard" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Total Earnings ($)</p>
+                <h3 id="counterEarnings" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-purple); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+            
+            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Open Gig Postings</p>
+                <h3 id="counterGigs" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+        </section>
+
+        <section class="contact-section" style="margin-top: 3rem; padding: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px;">
+            <h3 style="color: var(--highlight-blue); margin-bottom: 1.5rem;">CampusGig Engineering Hub</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; min-width: 280px;">
+                <div>
+                    <p style="color: var(--text-main); margin: 0 0 0.5rem 0;"><strong>Address:</strong> Tech Core Block C, Lab 4, University Campus</p>
+                    <p style="color: var(--text-main); margin: 0 0 0.5rem 0;"><strong>Support Line:</strong> +91 98765 43210</p>
+                    <p style="color: var(--text-main); margin: 0 0 1.5rem 0;"><strong>Help Desk:</strong> yuva.dev.support@campusgig.edu</p>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="#" style="color: var(--highlight-purple); text-decoration: none; font-size: 0.9rem;">GitHub Net</a>
+                        <a href="#" style="color: var(--highlight-purple); text-decoration: none; font-size: 0.9rem;">Developer Slack</a>
+                    </div>
+                </div>
+                <div>
+                    <div style="width: 100%; height: 150px; background: #334155; border-radius: 6px; overflow: hidden; position: relative;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.8415797378775!2d80.2185!3d13.0475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDAyJzUxLjAiTiA4MMKwMTMnMDYuNiJF!5e0!3m2!1sen!2sin!4v1625000000000!5m2!1sen!2sin" 
+                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <button id="scrollToTopBtn" style="position: fixed; bottom: 2rem; right: 2rem; width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple)); color: #ffffff; border: none; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1000; transition: transform 0.2s;">
+            ↑
+        </button>
     </main>
 
     <footer class="main-footer">
