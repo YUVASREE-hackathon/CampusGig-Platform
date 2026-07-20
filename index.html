@@ -6,6 +6,46 @@
     <title>CampusGig - Dynamic Freelance Hub</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Injection of Custom Glassmorphism Tooltip CSS Engine Rule Layers -->
+    <style>
+        [data-tooltip] {
+            position: relative;
+            cursor: pointer;
+        }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: rgba(30, 41, 59, 0.95);
+            color: #f8fafc;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        /* Top placement modification overrides for header elements */
+        .nav-links [data-tooltip]::after {
+            bottom: auto;
+            top: 135%;
+        }
+    </style>
 </head>
 <body class="theme-dark">
     
@@ -21,9 +61,9 @@
             <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
             <a href="post-job.html" id="navPost">Post Job</a>
             <a href="profile.html" id="navProfile" class="active_page">Profile</a>
-            <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
+            <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;" data-tooltip="Destroy session keys and exit safely">Logout</a>
             
-            <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme">
+            <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme" data-tooltip="Switch interface display appearance layout mode">
                 <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
             </button>
         </nav>
@@ -35,7 +75,7 @@
 
     <main class="container">
         
-        <div style="margin-bottom: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; box-shadow: var(--card-shadow);">
+        <div style="margin-bottom: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; box-shadow: var(--card-shadow);" data-tooltip="Real-time campus global system events banner stream ticker">
             <marquee behavior="scroll" direction="left" style="color: var(--highlight-blue); font-weight: 700; font-size: 0.95rem;">
                 🔥 System Notification: 3 new Python Scraping micro-gigs deployed today! | Mandatory Profile configuration registration link extended for all active campus developers. | Work securely via persistent client storage tokens.
             </marquee>
@@ -61,27 +101,27 @@
         <section id="dashboard-section" style="margin-bottom: 3rem;">
             <h2 style="margin-bottom: 1.2rem; color: var(--text-primary); font-size: 1.5rem;">Platform Metrics Control Dashboard</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem;">
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Total platform registrations verified across all active campus cohorts">
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Total Users</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-blue);">1,240</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Users with active session state signatures within past 24 hours">
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Active Users</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-green);">412</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Gross volume transacted through processing system micro-gateways">
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Total Revenue</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-purple);">$3,840</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Completed escrow milestone distributions fully authorized">
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Transactions</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: var(--text-primary);">189</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="System diagnostic notices currently queued for user review">
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Notifications</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: #f59e0b;">5 Active</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Items awaiting developer structural source verification passes">
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Pending Tasks</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: #ef4444;">3 Blocks</div>
                 </div>
@@ -126,7 +166,6 @@
                 </div>
 
                 <div class="gig_grid" id="liveFeedContainer">
-                    <!-- Dynamic client data overrides placeholders during system setup execution -->
                     <div class="gig_card card_animation_on_hover">
                         <h3>Build a Python Data Scraper</h3>
                         <p class="gig_desc">Extract key products from e-commerce sites.</p>
@@ -136,36 +175,35 @@
                         </div>
                         <div class="gig_footer">
                             <span class="budget">$40</span>
-                            <button class="apply_btn" onclick="applyGig('Python Scraper')">Apply</button>
+                            <button class="apply_btn" onclick="applyGig('Python Scraper')" data-tooltip="Submit evaluation profile token to project creator">Apply</button>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER -->
-       <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER -->
-<section class="stats-grid" id="statisticsDisplayGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-    <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Today's Bidders</p>
-        <h3 id="counterBidders" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-    
-    <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Active Compilations</p>
-        <h3 id="counterCompilations" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-blue); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-    
-    <div class="stats-card" id="earningsCard" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Total Earnings ($)</p>
-        <h3 id="counterEarnings" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-purple); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-    
-    <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Open Gig Postings</p>
-        <h3 id="counterGigs" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
-    </div>
-</section>
+        <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER WITH DIAGNOSTIC HOVER TOOLTIPS -->
+        <section class="stats-grid" id="statisticsDisplayGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Total student entries matching campus application array lengths">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Today's Bidders</p>
+                <h3 id="counterBidders" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+            
+            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Total development modules successfully shifted to 'Accepted' states">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Active Compilations</p>
+                <h3 id="counterCompilations" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-blue); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+            
+            <div class="stats-card" id="earningsCard" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Accumulated income generated across valid client balance pipelines">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Total Earnings ($)</p>
+                <h3 id="counterEarnings" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-purple); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+            
+            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Total open job allocations tracked within local engine variables">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Open Gig Postings</p>
+                <h3 id="counterGigs" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
+            </div>
+        </section>
 
         <section class="contact-section" style="margin-top: 3rem; padding: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px;">
             <h3 style="color: var(--highlight-blue); margin-bottom: 1.5rem;">CampusGig Engineering Hub</h3>
@@ -188,7 +226,7 @@
             </div>
         </section>
 
-        <button id="scrollToTopBtn" style="position: fixed; bottom: 2rem; right: 2rem; width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple)); color: #ffffff; border: none; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1000; transition: transform 0.2s;">
+        <button id="scrollToTopBtn" style="position: fixed; bottom: 2rem; right: 2rem; width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple)); color: #ffffff; border: none; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1000; transition: transform 0.2s;" data-tooltip="Snap viewport layout structure back to header height">
             ↑
         </button>
     </main>
