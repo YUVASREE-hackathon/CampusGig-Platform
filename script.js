@@ -63,7 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fire up the real-time dynamic engines
     startLiveClock();
-    initializeAsynchronousCounters();
+    if (typeof initializeAsynchronousCounters === "function") {
+        initializeAsynchronousCounters();
+    }
     initializeScrollInterceptor();
 });
 
