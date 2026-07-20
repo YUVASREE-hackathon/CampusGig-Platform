@@ -1031,5 +1031,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+// --- ROLE ADAPTIVE DISPLAY CONTROLLER ---
+function updateUserInterfaceCounters(activeRoleString) {
+    const earningsTileElement = document.getElementById("earningsCard");
+    
+    if (!earningsTileElement) return;
+
+    if (activeRoleString === "Admin") {
+        // Hide the earnings metric from administrative stakeholders
+        earningsTileElement.classList.add("hidden");
+    } else {
+        // Re-display the card layout if the user returns to the student profile
+        earningsTileElement.classList.remove("hidden");
+    }
+}
+
+// Hook this execution directly into your existing role control click handler functions!
+// Example usage inside button toggle listeners:
+// updateUserInterfaceCounters("Admin"); or updateUserInterfaceCounters("Applicant");
 function processLogout() { alert("Closing transmission paths."); window.location.reload(); }
 function toggleSystemTheme() { document.body.classList.toggle("theme-light"); }
