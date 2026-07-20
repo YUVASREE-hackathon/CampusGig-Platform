@@ -21,13 +21,14 @@ let notifications = JSON.parse(localStorage.getItem('campus_notifications')) || 
 
 // Session Workspace Configuration Tracking
 let currentUser = JSON.parse(sessionStorage.getItem('active_user')) || { 
-    email: "admin.desk@cit.edu.in", 
-    role: "admin", 
-    name: "Professor Project Administrator" 
+    email: "student.yuva@cit.edu.in", 
+    role: "applicant", 
+    name: "YUVASREE I" 
 };
 
-// Global Bootup Operations Pipeline
-// Global Bootup Operations Pipeline
+/* ==========================================================================
+   Global Bootup Operations Pipeline
+   ========================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
     // Synchronize current user session across all page scopes
     const activeSessionState = sessionStorage.getItem('active_user');
@@ -49,20 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // UI Rendering Execution Trees with Safety Buffers
     initializeRoleView();
+    updateUserInterfaceCounters(currentUser.role === 'admin' ? 'Admin' : 'Applicant');
     renderJobFeed();
     renderAdminDashboard();
     renderApplicantMyGigsPortfolio(); 
     renderNotifications();
     setupProfileDataBinding();
+    setupDragAndDropEnvironment();
 
     // Hydrate form fields and editable biography area from localStorage cache
-    if (typeof loadSavedProfileData === "function") {
-        loadSavedProfileData();
-    }
+    loadSavedProfileData();
 
-    // Fire up the real-time dynamic date & time engine
+    // Fire up the real-time dynamic engines
     startLiveClock();
+    initializeAsynchronousCounters();
+    initializeScrollInterceptor();
 });
+
 function syncToLocalStorage() {
     localStorage.setItem('campus_gigs', JSON.stringify(gigs));
     localStorage.setItem('campus_applications', JSON.stringify(applications));
@@ -93,6 +97,18 @@ function initializeRoleView() {
         if (adminPanel) adminPanel.style.display = "none";
         if (postJobLink) postJobLink.style.display = "none";
         if (myGigsLink) myGigsLink.style.display = "inline-block";
+    }
+}
+
+// --- ROLE ADAPTIVE DISPLAY CONTROLLER ---
+function updateUserInterfaceCounters(activeRoleString) {
+    const earningsTileElement = document.getElementById("earningsCard");
+    if (!earningsTileElement) return;
+
+    if (activeRoleString === "Admin") {
+        earningsTileElement.classList.add("hidden");
+    } else {
+        earningsTileElement.classList.remove("hidden");
     }
 }
 
@@ -327,24 +343,16 @@ function processModalFormSubmission(event) {
     window.location.reload();
 }
 
-/* --- DYNAMIC APPLICANT WORKSPACE RENDER ENGINE (`my-gigs.html` INTEGRATION) --- */
+/* --- DYNAMIC APPLICANT WORKSPACE RENDER ENGINE --- */
 function renderApplicantMyGigsPortfolio() {
-    const liveFeedContainer = document.getElementById("liveFeedContainer");
-    
-    // Crucial Change: Only target a dedicated dynamic portfolio tracker element
     const dynamicTracker = document.getElementById("dynamicApplicantJobsTracker");
-    
-    const isMyGigsPage = window.location.pathname.includes("my-gigs.html");
-    const displayContainer = isMyGigsPage ? dynamicTracker : null;
-    
-    // If there is no dynamic tracker element container on the page, don't execute or clear anything!
-    if (!displayContainer) return; 
+    if (!dynamicTracker) return; 
 
-    displayContainer.innerHTML = "";
+    dynamicTracker.innerHTML = "";
     const myActiveTracks = applications.filter(app => app.applicantEmail === currentUser.email);
 
     if (myActiveTracks.length === 0) {
-        displayContainer.innerHTML = `<p style="color:var(--text-muted); padding:2rem; font-style:italic; text-align:center; width:100%;">You have no active contract tracks assigned currently.</p>`;
+        dynamicTracker.innerHTML = `<p style="color:var(--text-muted); padding:2rem; font-style:italic; text-align:center; width:100%;">You have no active contract tracks assigned currently.</p>`;
         return;
     }
 
@@ -412,7 +420,7 @@ function renderApplicantMyGigsPortfolio() {
             </div>
             ${contractWorkstationMarkup}
         `;
-        displayContainer.appendChild(outerCard);
+        dynamicTracker.appendChild(outerCard);
     });
 }
 
@@ -551,7 +559,7 @@ function approveCurrentAssignmentStep(appId) {
         notifications.push({
             id: "notif-" + Date.now(),
             recipient: app.applicantEmail,
-            message: `💰 CONTRACT PAYOUT RELEASEED: All ${app.totalAssignments} assignments for "${app.jobTitle}" are successfully verified! Administrative clearance released the budget allocation payment value: $${targetJob?.budget || 40}.`,
+            message: `💰 CONTRACT PAYOUT RELEASED: All ${app.totalAssignments} assignments for "${app.jobTitle}" are successfully verified! Administrative clearance released the budget allocation payment value: $${targetJob?.budget || 40}.`,
             timestamp: new Date().toLocaleTimeString()
         });
 
@@ -589,7 +597,7 @@ function clearNotifications() {
     renderNotifications();
 }
 
-/* --- FALLBACKS PREVENTATIVE BINDINGS LAYER --- */
+/* --- PROFILE MANAGEMENT & DATA STORAGE LAYER --- */
 function setupProfileDataBinding() {
     const dName = document.getElementById("displayProfileName");
     const dRole = document.getElementById("displayProfileRole");
@@ -598,119 +606,7 @@ function setupProfileDataBinding() {
     if (dRole) dRole.innerText = `${currentUser.role.toUpperCase()} ROOT SECURITY TOKEN`;
     if (dMail) dMail.innerText = currentUser.email;
 }
-/* --- DYNAMIC LIVE CLOCK ENGINE --- */
-function startLiveClock() {
-    const clockElement = document.getElementById("liveClockWidget");
-    if (!clockElement) return; // Safety exit if the widget isn't on the current page
 
-    function updateTime() {
-        const now = new Date();
-        
-        // Options to format date beautifully: e.g., "Oct 24, 2023, 4:15:02 PM"
-        const formattedDate = now.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-        
-        const formattedTime = now.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        });
-
-        clockElement.innerHTML = `📅 ${formattedDate} &nbsp;|&nbsp; ⏰ ${formattedTime}`;
-    }
-
-    // Run immediately once on load, then tick every 1000ms (1 second)
-    updateTime();
-    setInterval(updateTime, 1000);
-}
-
-/* --- COMPREHENSIVE FORM VALIDATION ENGINE & EDITABLE STORAGE --- */
-function validateAndSaveProfile() {
-    const form = document.getElementById("labComprehensiveRegisterForm");
-    if (!form) return;
-
-    let isFormValid = true;
-    const inputs = form.querySelectorAll("input, select, textarea");
-
-    inputs.forEach(input => {
-        const messageContainer = input.parentElement.querySelector(".validation-message");
-        
-        // Use native HTML5 checkValidity interface framework
-        if (!input.checkValidity()) {
-            isFormValid = false;
-            input.style.borderColor = "#ff4a4a";
-            if (messageContainer) {
-                messageContainer.style.display = "block";
-            }
-        } else {
-            input.style.borderColor = "var(--border-color)";
-            if (messageContainer) {
-                messageContainer.style.display = "none";
-            }
-        }
-    });
-
-    if (isFormValid) {
-        // Collect variables for deep storage committing
-        const updatedProfile = {
-            name: document.getElementById("profileUsername").value,
-            email: document.getElementById("regEmail").value,
-            phone: document.getElementById("regPhone").value,
-            gender: document.getElementById("regGender").value,
-            dob: document.getElementById("regDOB").value,
-            specialization: document.getElementById("profileSpecialization").value,
-            address: document.getElementById("regAddress").value,
-            biography: document.getElementById("editableBioArea").innerHTML // Captures editable workspace structure
-        };
-
-        // Write user context array directly to disk cache
-        localStorage.setItem("campus_user_profile", JSON.stringify(updatedProfile));
-        
-        // Dynamically update upper DOM meta profiles immediately
-        if(document.getElementById("displayProfileName")) {
-            document.getElementById("displayProfileName").innerText = updatedProfile.name;
-        }
-        if(document.getElementById("profileEmailDisplay")) {
-            document.getElementById("profileEmailDisplay").innerText = updatedProfile.email;
-        }
-
-        alert("🚀 Validated registration parameters successfully committed to client transaction storage layer.");
-    } else {
-        alert("❌ Form validation failed! Please check highlighted fields for accuracy.");
-    }
-}
-
-// Automatically load cached profile records on page navigation context loops
-function loadSavedProfileData() {
-    const dataPayload = localStorage.getItem("campus_user_profile");
-    if (!dataPayload) return;
-
-    const profile = JSON.parse(dataPayload);
-    
-    if (document.getElementById("profileUsername")) document.getElementById("profileUsername").value = profile.name || "";
-    if (document.getElementById("regEmail")) document.getElementById("regEmail").value = profile.email || "";
-    if (document.getElementById("regPhone")) document.getElementById("regPhone").value = profile.phone || "";
-    if (document.getElementById("regGender")) document.getElementById("regGender").value = profile.gender || "";
-    if (document.getElementById("regDOB")) document.getElementById("regDOB").value = profile.dob || "";
-    if (document.getElementById("profileSpecialization")) document.getElementById("profileSpecialization").value = profile.specialization || "";
-    if (document.getElementById("regAddress")) document.getElementById("regAddress").value = profile.address || "";
-    if (document.getElementById("editableBioArea") && profile.biography) {
-        document.getElementById("editableBioArea").innerHTML = profile.biography;
-    }
-}
-
-// Clear cached registry memory data
-function clearCachedRegistration() {
-    localStorage.removeItem("campus_user_profile");
-    alert("Clean operation verified: Flush Local Cache Storage complete.");
-    window.location.reload();
-}
-
-/* --- COMPREHENSIVE REGISTRY PROCESSING MODULE --- */
 function validateAndSaveProfile() {
     const form = document.getElementById("labComprehensiveRegisterForm");
     if (!form) return;
@@ -731,7 +627,6 @@ function validateAndSaveProfile() {
     });
 
     if (isFormValid) {
-        // Gathering checked inputs for skills arrays
         const checkedSkills = [];
         document.querySelectorAll("input[name='skills']:checked").forEach(checkbox => {
             checkedSkills.push(checkbox.value);
@@ -745,11 +640,13 @@ function validateAndSaveProfile() {
             dob: document.getElementById("regDOB").value,
             specialization: document.getElementById("profileSpecialization").value,
             address: document.getElementById("regAddress").value,
-            skills: checkedSkills, // Array payload containing skills checkboxes
-            feedback: document.getElementById("editableFeedbackArea").innerText // Captures contenteditable text node values
+            skills: checkedSkills, 
+            feedback: document.getElementById("editableFeedbackArea") ? document.getElementById("editableFeedbackArea").innerText : ""
         };
 
         localStorage.setItem("campus_user_profile", JSON.stringify(updatedProfile));
+        sessionStorage.setItem("active_profile_session_username", updatedProfile.name);
+        sessionStorage.setItem("last_session_interaction_timestamp", new Date().toISOString());
         
         if(document.getElementById("displayProfileName")) {
             document.getElementById("displayProfileName").innerText = updatedProfile.name;
@@ -758,13 +655,12 @@ function validateAndSaveProfile() {
             document.getElementById("profileEmailDisplay").innerText = updatedProfile.email;
         }
 
-        alert("🚀 Registration parameters and profile feedback successfully committed to transaction storage layers.");
+        alert("🚀 Registration parameters and profile configurations successfully committed to system layers.");
     } else {
-        alert("❌ Form validation failed! Please fix your input field arrays before submitting.");
+        alert("❌ Form validation failed! Please check highlighted fields for accuracy.");
     }
 }
 
-// Hydrates checkboxes, textareas, and contenteditable sections cleanly
 function loadSavedProfileData() {
     const dataPayload = localStorage.getItem("campus_user_profile");
     if (!dataPayload) return;
@@ -779,155 +675,17 @@ function loadSavedProfileData() {
     if (document.getElementById("profileSpecialization")) document.getElementById("profileSpecialization").value = profile.specialization || "";
     if (document.getElementById("regAddress")) document.getElementById("regAddress").value = profile.address || "";
     
-    // Check back previous skill choices
     if (profile.skills && Array.isArray(profile.skills)) {
         document.querySelectorAll("input[name='skills']").forEach(checkbox => {
             checkbox.checked = profile.skills.includes(checkbox.value);
         });
     }
 
-    // Populate editable text nodes
     if (document.getElementById("editableFeedbackArea") && profile.feedback) {
         document.getElementById("editableFeedbackArea").innerText = profile.feedback;
     }
 }
 
-// Requirement 17: Cancel Action route sequence handler
-function handleCancelNavigation() {
-    if (confirm("Are you sure you want to discard your input modifications and return home?")) {
-        window.location.href = "index.html";
-    }
-}
-
-function clearCachedRegistration() {
-    localStorage.removeItem("campus_user_profile");
-    alert("Clean operation verified: Flush Local Cache Storage complete.");
-    window.location.reload();
-}
-
-/* ==========================================================================
-   LAB EXP: DRAG AND DROP & CLIENT STORAGE ROUTINE MODULES
-   ========================================================================== */
-
-// --- Requirement 7: Implement dragstart, dragover, and drop event workflows ---
-/* ==========================================================================
-   LAB EXP: ADVANCED DRAG AND DROP WORKFLOW MODULE (REVISION)
-   ========================================================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-    const dragSource = document.getElementById("dragSourceToken");
-    const dropTarget = document.getElementById("fileDropZone"); // Matches your id in my-gigs.html
-
-    // FIX: Browsers will hijack a real-file drag-and-drop and navigate the whole
-    // tab away to open the file if the drop lands even a pixel outside the
-    // intended target. Blocking the default here on window is what stops that
-    // "page suddenly opens the file / drop silently does nothing" behavior.
-    ["dragover", "drop"].forEach(eventName => {
-        window.addEventListener(eventName, (event) => {
-            event.preventDefault();
-        });
-    });
-
-    if (dragSource) {
-        // Handle internal drag source element token (Requirement 5 & 7)
-        dragSource.addEventListener("dragstart", (event) => {
-            event.dataTransfer.effectAllowed = "copyMove";
-            event.dataTransfer.setData("text/plain", event.target.id);
-            dragSource.style.opacity = "0.5";
-        });
-
-        dragSource.addEventListener("dragend", () => {
-            dragSource.style.opacity = "1";
-        });
-    }
-
-    if (dropTarget) {
-        // Prevent default browser behaviors for both dragover and dragenter
-        ["dragover", "dragenter"].forEach(eventName => {
-            dropTarget.addEventListener(eventName, (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                event.dataTransfer.dropEffect = "copy";
-                dropTarget.classList.add("drag_over_active");
-            });
-        });
-
-        // Clean up visual status classes on leave
-        ["dragleave", "drop"].forEach(eventName => {
-            dropTarget.addEventListener(eventName, () => {
-                dropTarget.classList.remove("drag_over_active");
-            });
-        });
-
-        // Requirement 7: Process the Drop Action Event
-        dropTarget.addEventListener("drop", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const tokenId = event.dataTransfer.getData("text/plain");
-            const files = event.dataTransfer.files;
-
-            // SCENARIO A: Extract dropped native files from file explorers safely
-            if (files && files.length > 0) {
-                const droppedFile = files[0];
-
-                // 1. Success Visual updates
-                dropTarget.style.borderColor = "var(--highlight-green)";
-                document.getElementById("dropZoneIcon").textContent = "📄";
-                document.getElementById("dropZoneText").innerHTML =
-                    `<strong>✅ Native File Loaded:</strong> ${droppedFile.name} (${(droppedFile.size / 1024).toFixed(1)} KB) ready for processing!`;
-
-                // 2. Track status in session memory state
-                sessionStorage.setItem("last_submission_status", `Uploaded file [${droppedFile.name}] via local explorer drop.`);
-                alert(`📁 File "${droppedFile.name}" recognized successfully!`);
-            }
-            // SCENARIO B: Fallback check for browser restrictions or the internal token badge
-            else if (tokenId === "dragSourceToken" || (!tokenId && event.dataTransfer.items)) {
-                // This catch block handles local files under security contexts when .files array is blanked by the OS
-                dropTarget.style.borderColor = "var(--highlight-purple)";
-                document.getElementById("dropZoneIcon").textContent = "📦";
-                document.getElementById("dropZoneText").innerHTML =
-                    "<strong>✅ Module Package Dropped:</strong> compressed zip tracking verified successfully via sandbox system!";
-
-                sessionStorage.setItem("last_submission_status", "Uploaded via local verification environment.");
-                alert("📦 Package accepted and verified!");
-            }
-        });
-    }
-});
-
-// --- Requirements 8 & 9: Save information via local & sessionStorage ---
-function validateAndSaveProfile() {
-    const form = document.getElementById("labComprehensiveRegisterForm");
-    if (!form) return;
-
-    // Capture standard checklist choices 
-    const checkedSkills = [];
-    document.querySelectorAll("input[name='skills']:checked").forEach(cb => checkedSkills.push(cb.value));
-
-    const updatedProfile = {
-        name: document.getElementById("profileUsername").value,
-        email: document.getElementById("regEmail").value,
-        phone: document.getElementById("regPhone").value,
-        gender: document.getElementById("regGender").value,
-        dob: document.getElementById("regDOB").value,
-        specialization: document.getElementById("profileSpecialization").value,
-        address: document.getElementById("regAddress").value,
-        skills: checkedSkills,
-        feedback: document.getElementById("editableFeedbackArea").innerText
-    };
-
-    // Requirement 8: Save Permanent Records on disk layout arrays
-    localStorage.setItem("campus_user_profile", JSON.stringify(updatedProfile));
-
-    // Requirement 9: Save Temporary State trackers inside session context layers
-    sessionStorage.setItem("active_profile_session_username", updatedProfile.name);
-    sessionStorage.setItem("last_session_interaction_timestamp", new Date().toISOString());
-
-    alert("💾 Profile configurations successfully cataloged in local cache and active session records.");
-}
-
-// --- Requirement 10: Retrieve Data and Display in a neat view container block ---
 function retrieveAndDisplayData() {
     const localRaw = localStorage.getItem("campus_user_profile");
     const sessionUser = sessionStorage.getItem("active_profile_session_username");
@@ -944,7 +702,6 @@ function retrieveAndDisplayData() {
 
     const data = JSON.parse(localRaw);
 
-    // Render local records beautifully inside grid entries
     localOutput.innerHTML = `
         <div><strong>👤 Full Identity Name:</strong> ${data.name || "N/A"}</div>
         <div><strong>📧 Correspondence Email:</strong> ${data.email || "N/A"}</div>
@@ -959,50 +716,134 @@ function retrieveAndDisplayData() {
         </div>
     `;
 
-    // Render session storage state outputs
     sessionOutput.innerHTML = `
         <p><strong>👤 Current Active User Session Token:</strong> ${sessionUser || "Guest Account Profile"}</p>
         <p><strong>📦 Workspace Drag & Drop Activity Status:</strong> ${dropStatus}</p>
     `;
 
-    // Make the neat structural display block completely visible
     if (displayContainer) displayContainer.classList.remove("hidden");
 }
 
-// --- Requirement 11: Clear Data Functionality Handler ---
-function clearProfileStorage() {
+function handleCancelNavigation() {
+    if (confirm("Are you sure you want to discard your input modifications and return home?")) {
+        window.location.href = "index.html";
+    }
+}
+
+function clearCachedRegistration() {
     if (confirm("🚨 Are you sure you want to completely wipe all cached information matrices from this browser?")) {
-        // Clear storage layers
         localStorage.removeItem("campus_user_profile");
         sessionStorage.removeItem("active_profile_session_username");
         sessionStorage.removeItem("last_submission_status");
 
-        // UI Reset updates
         const displayContainer = document.getElementById("retrievedDataDisplayBlock");
         if (displayContainer) displayContainer.classList.add("hidden");
 
         const form = document.getElementById("labComprehensiveRegisterForm");
         if (form) form.reset();
         if (document.getElementById("editableFeedbackArea")) {
-            document.getElementById("editableFeedbackArea").innerText = "Workspace cleared.";
+            document.getElementById("editableFeedbackArea").innerText = "";
         }
 
         alert("🗑️ Local cache storage layers cleared successfully.");
+        window.location.reload();
     }
 }
-document.addEventListener("DOMContentLoaded", () => {
-    
-    // --- REQUIREMENT 5: ASYNCHRONOUS DATA COUNTER ENGINE ---
+
+/* --- ADVANCED DRAG AND DROP WORKFLOW ENGINE --- */
+function setupDragAndDropEnvironment() {
+    const dragSource = document.getElementById("dragSourceToken");
+    const dropTarget = document.getElementById("fileDropZone");
+
+    ["dragover", "drop"].forEach(eventName => {
+        window.addEventListener(eventName, (event) => {
+            event.preventDefault();
+        });
+    });
+
+    if (dragSource) {
+        dragSource.addEventListener("dragstart", (event) => {
+            event.dataTransfer.effectAllowed = "copyMove";
+            event.dataTransfer.setData("text/plain", event.target.id);
+            dragSource.style.opacity = "0.5";
+        });
+
+        dragSource.addEventListener("dragend", () => {
+            dragSource.style.opacity = "1";
+        });
+    }
+
+    if (dropTarget) {
+        ["dragover", "dragenter"].forEach(eventName => {
+            dropTarget.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                event.dataTransfer.dropEffect = "copy";
+                dropTarget.classList.add("drag_over_active");
+            });
+        });
+
+        ["dragleave", "drop"].forEach(eventName => {
+            dropTarget.addEventListener(eventName, () => {
+                dropTarget.classList.remove("drag_over_active");
+            });
+        });
+
+        dropTarget.addEventListener("drop", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const tokenId = event.dataTransfer.getData("text/plain");
+            const files = event.dataTransfer.files;
+
+            if (files && files.length > 0) {
+                const droppedFile = files[0];
+                dropTarget.style.borderColor = "var(--highlight-green)";
+                if (document.getElementById("dropZoneIcon")) document.getElementById("dropZoneIcon").textContent = "📄";
+                if (document.getElementById("dropZoneText")) {
+                    document.getElementById("dropZoneText").innerHTML = `<strong>✅ Native File Loaded:</strong> ${droppedFile.name} (${(droppedFile.size / 1024).toFixed(1)} KB) ready for processing!`;
+                }
+                sessionStorage.setItem("last_submission_status", `Uploaded file [${droppedFile.name}] via local explorer drop.`);
+                alert(`📁 File "${droppedFile.name}" recognized successfully!`);
+            } 
+            else if (tokenId === "dragSourceToken" || (!tokenId && event.dataTransfer.items)) {
+                dropTarget.style.borderColor = "var(--highlight-purple)";
+                if (document.getElementById("dropZoneIcon")) document.getElementById("dropZoneIcon").textContent = "📦";
+                if (document.getElementById("dropZoneText")) {
+                    document.getElementById("dropZoneText").innerHTML = "<strong>✅ Module Package Dropped:</strong> compressed zip tracking verified successfully via sandbox system!";
+                }
+                sessionStorage.setItem("last_submission_status", "Uploaded via local verification environment.");
+                alert("📦 Package accepted and verified!");
+            }
+        });
+    }
+}
+
+/* --- DYNAMIC UTILITY INTERACTION ENGINE --- */
+function startLiveClock() {
+    const clockElement = document.getElementById("liveClockWidget");
+    if (!clockElement) return;
+
+    function updateTime() {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        clockElement.innerHTML = `📅 ${formattedDate} &nbsp;|&nbsp; ⏰ ${formattedTime}`;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+}
+
+function initializeAsynchronousCounters() {
     const counterElements = document.querySelectorAll(".counter-metric");
-    
     counterElements.forEach(counter => {
         const targetValue = parseInt(counter.getAttribute("data-target"), 10);
-        const engineDuration = 1500; // Animation lifecycle run window in milliseconds
+        const engineDuration = 1500; 
         const frameStepTime = Math.max(Math.floor(engineDuration / targetValue), 15);
         let activeValue = 0;
         
         const runtimeProgressLoop = setInterval(() => {
-            activeValue += Math.ceil(targetValue / 100); // Scale steps fluidly
+            activeValue += Math.ceil(targetValue / 100); 
             if (activeValue >= targetValue) {
                 counter.textContent = targetValue;
                 clearInterval(runtimeProgressLoop);
@@ -1011,12 +852,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }, frameStepTime);
     });
+}
 
-    // --- REQUIREMENT 16: VIEWPORT SCROLL ACTION INTERCEPTOR ---
+function initializeScrollInterceptor() {
     const topNavigationButton = document.getElementById("scrollToTopBtn");
+    if (!topNavigationButton) return;
 
     window.addEventListener("scroll", () => {
-        // Toggle absolute display parameter if user passes 300px down canvas frame
         if (window.scrollY > 300) {
             topNavigationButton.style.display = "flex";
         } else {
@@ -1025,29 +867,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     topNavigationButton.addEventListener("click", () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     });
-});
-// --- ROLE ADAPTIVE DISPLAY CONTROLLER ---
-function updateUserInterfaceCounters(activeRoleString) {
-    const earningsTileElement = document.getElementById("earningsCard");
-    
-    if (!earningsTileElement) return;
-
-    if (activeRoleString === "Admin") {
-        // Hide the earnings metric from administrative stakeholders
-        earningsTileElement.classList.add("hidden");
-    } else {
-        // Re-display the card layout if the user returns to the student profile
-        earningsTileElement.classList.remove("hidden");
-    }
 }
 
-// Hook this execution directly into your existing role control click handler functions!
-// Example usage inside button toggle listeners:
-// updateUserInterfaceCounters("Admin"); or updateUserInterfaceCounters("Applicant");
-function processLogout() { alert("Closing transmission paths."); window.location.reload(); }
-function toggleSystemTheme() { document.body.classList.toggle("theme-light"); }
+function processLogout() { 
+    alert("Closing transmission paths."); 
+    sessionStorage.removeItem('active_user');
+    window.location.reload(); 
+}
+
+function toggleSystemTheme() { 
+    document.body.classList.toggle("theme-light"); 
+}
