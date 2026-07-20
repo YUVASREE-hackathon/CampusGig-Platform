@@ -84,38 +84,6 @@
     border-top-right-radius: 8px;
 }
 
-/* --- REQUIREMENT 32: PURE CSS TOOLTIP UTILITY MATRIX --- */
-[data-tooltip] {
-    position: relative;
-    cursor: pointer;
-}
-
-[data-tooltip]::before {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%) scale(0.9);
-    padding: 0.4rem 0.8rem;
-    background: #1e293b;
-    color: #ffffff;
-    font-size: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease-in-out;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    font-weight: 400;
-}
-
-[data-tooltip]:hover::before {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) scale(1);
-}
 
 /* ==========================================================================
    Reset & Base Global Wireframes
