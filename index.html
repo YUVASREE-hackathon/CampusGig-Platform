@@ -7,60 +7,274 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
     
-    <!-- Injection of Custom Glassmorphism Tooltip CSS Engine Rule Layers -->
     <style>
-/* 1. Tooltip Base Setup on the Card Wrapper Container */
-[data-tooltip] {
-    position: relative;
-    cursor: pointer;
-}
+        /* ==========================================================================
+           GLOBAL RESETS & CONTAINERS (Fixes Left Edge Cutoff)
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-/* 2. CRITICAL SAFEGUARD: Stop child text nodes from double-firing the hover event */
-[data-tooltip] * {
-    pointer-events: none !important;
-}
+        body {
+            overflow-x: hidden; /* Prevents unwanted horizontal scrolling */
+        }
 
-/* 3. Tooltip Popup Box Presentation Layer */
-[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background: rgba(30, 41, 59, 0.95);
-    color: #f8fafc;
-    padding: 0.5rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: 500;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 9999;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+        .main-header {
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1000;
+        }
 
-/* 4. Smooth Transition Transition on Hover States */
-[data-tooltip]:hover::after {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-}
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding-left: 0.25rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* ==========================================================================
+           1. RELOCATED SCROLL PROGRESS BAR (Anchored Below Header)
+           ========================================================================== */
+        #scrollProgressBarContainer {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        #scrollProgressBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #22c55e);
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+        }
+
+        /* ==========================================================================
+           2. TOOLTIP ENGINE & SAFEGUARDS
+           ========================================================================== */
+        [data-tooltip] {
+            position: relative;
+            cursor: pointer;
+        }
+        [data-tooltip] * {
+            pointer-events: none !important;
+        }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: rgba(30, 41, 59, 0.95);
+            color: #f8fafc;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==========================================================================
+           3. FIVE CUSTOM CSS ANIMATIONS
+           ========================================================================== */
+        
+        /* Animation 1: Fade-In Effect */
+        .anim-fade-in {
+            animation: fadeIn 1.2s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animation 2: Bounce Effect */
+        .anim-bounce {
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        /* Animation 3: Zoom Effect */
+        .anim-zoom {
+            animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Animation 4: Pulse Effect */
+        .anim-pulse {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        /* Animation 5: Card Hover Animation */
+        .anim-card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .anim-card-hover:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--highlight-blue, #3b82f6) !important;
+        }
+
+        /* Animation 6 (Bonus): Typing Effect */
+        .anim-typing {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--highlight-blue, #3b82f6);
+            animation: typing 4.5s steps(40, end), blink-caret 1s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--highlight-blue, #3b82f6); }
+        }
+
+        /* ==========================================================================
+           4. AUTOMATIC IMAGE SLIDER STYLES
+           ========================================================================== */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            margin: 2rem auto;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.6s ease-in-out;
+            width: 300%;
+        }
+        .slide {
+            width: 33.333%;
+            position: relative;
+        }
+        .slide img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+        }
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(15, 23, 42, 0.95));
+            color: #ffffff;
+            padding: 1.5rem 1rem 0.8rem 1rem;
+            text-align: center;
+        }
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s, width 0.3s;
+        }
+        .dot.active {
+            background: #3b82f6;
+            width: 24px;
+            border-radius: 6px;
+        }
+
+        /* ==========================================================================
+           5. REaligned SCROLL TO TOP BUTTON
+           ========================================================================== */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--highlight-blue, #3b82f6), var(--highlight-purple, #a855f7));
+            color: #ffffff;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+        }
+        #scrollToTopBtn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        #scrollToTopBtn:hover {
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+        }
     </style>
 </head>
 <body class="theme-dark">
-    
+
     <header class="main-header glassmorphism">
         <div class="logo">
-            CampusGig 🚀
-            <span style="font-size: 0.75rem; display: block; color: var(--text-muted); font-weight: 400; margin-top: 0.2rem;">
+            CampusGig <span class="anim-bounce">🚀</span>
+            <span style="font-size: 0.75rem; display: block; color: var(--text-muted, #94a3b8); font-weight: 400; margin-top: 0.2rem;">
                 Connect. Work. Earn. | Student: YUVASREE I (Reg: 2303717620522061)
             </span>
         </div>
-        <nav class="nav-links" style="display: flex; align-items: center;">
+        <nav class="nav-links" style="display: flex; align-items: center; gap: 1rem;">
             <a href="index.html" id="navBrowse">Browse Gigs</a>
             <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
             <a href="post-job.html" id="navPost">Post Job</a>
@@ -73,78 +287,120 @@
         </nav>
     </header>
 
-    <div id="liveClockWidget" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); background: var(--input-bg); padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); display: inline-block; margin: 0.5rem 0;">
-        📅 Loading system time...
+    <!-- RELOCATED SCROLL PROGRESS BAR (Underneath Header) -->
+    <div id="scrollProgressBarContainer">
+        <div id="scrollProgressBar"></div>
     </div>
 
-    <main class="container">
+    <!-- LIVE CLOCK WITH SAFE LEFT MARGIN -->
+    <div style="padding: 0 1.5rem; margin-top: 1rem;">
+        <div id="liveClockWidget" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem; color: var(--text-secondary, #cbd5e1); background: var(--input-bg, #1e293b); padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: inline-block;">
+            📅 Loading system time...
+        </div>
+    </div>
+
+    <main class="container anim-fade-in" style="margin-top: 1rem;">
         
-        <div style="margin-bottom: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; box-shadow: var(--card-shadow);" data-tooltip="Real-time campus global system events banner stream ticker">
-            <marquee behavior="scroll" direction="left" style="color: var(--highlight-blue); font-weight: 700; font-size: 0.95rem;">
+        <!-- NOTIFICATION TICKER WITH PULSE ANIMATION -->
+        <div class="anim-pulse" style="margin-bottom: 2rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 0.6rem 1rem; border-radius: 8px; box-shadow: var(--card-shadow);" data-tooltip="Real-time campus global system events banner stream ticker">
+            <marquee behavior="scroll" direction="left" style="color: var(--highlight-blue, #3b82f6); font-weight: 700; font-size: 0.95rem;">
                 🔥 System Notification: 3 new Python Scraping micro-gigs deployed today! | Mandatory Profile configuration registration link extended for all active campus developers. | Work securely via persistent client storage tokens.
             </marquee>
         </div>
 
-        <section class="banner animation_gradient_text" id="about-section">
-            <h1>Dynamic freelance <span class="highlight_primary">possibilities</span> at your college.</h1>
-            <p>Welcome to CampusGig! Fluidly connecting students with skill-based opportunities across modern engineering layouts.</p>
+        <!-- HERO BANNER WITH ZOOM ANIMATION & TYPING EFFECT -->
+        <section class="banner animation_gradient_text anim-zoom" id="about-section" style="padding: 2rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 12px;">
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Dynamic freelance <span class="highlight_primary" style="color: #3b82f6;">possibilities</span> at your college.</h1>
+            <p><span class="anim-typing">Welcome to CampusGig! Connecting students with opportunities.</span></p>
             
-            <div style="margin-top: 1.8rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem; text-align: left;">
+            <div style="margin-top: 1.8rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding-top: 1.2rem; text-align: left;">
                 <div>
-                    <h4 style="color: var(--highlight-purple); font-size: 1rem; margin-bottom: 0.4rem;">🎯 Our Vision</h4>
-                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">To cultivate a decentralized campus micro-economy that prioritizes technical skill acquisition and self-reliance over rigid operational hurdles.</p>
+                    <h4 style="color: var(--highlight-purple, #a855f7); font-size: 1rem; margin-bottom: 0.4rem;">🎯 Our Vision</h4>
+                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary, #cbd5e1); line-height: 1.5;">To cultivate a decentralized campus micro-economy that prioritizes technical skill acquisition and self-reliance over rigid operational hurdles.</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--highlight-green); font-size: 1rem; margin-bottom: 0.4rem;">🚀 Our Mission</h4>
-                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">Empowering technical students to construct scalable real-world work items through structured code pipelines, layouts, and data infrastructure.</p>
+                    <h4 style="color: var(--highlight-green, #22c55e); font-size: 1rem; margin-bottom: 0.4rem;">🚀 Our Mission</h4>
+                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary, #cbd5e1); line-height: 1.5;">Empowering technical students to construct scalable real-world work items through structured code pipelines, layouts, and data infrastructure.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Platform Metrics Control Dashboard Area -->
+        <!-- AUTOMATIC IMAGE SLIDER COMPONENT -->
+        <section class="slider-container" id="campusSlider">
+            <div class="slider-wrapper" id="sliderWrapper">
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80" alt="Collaborative Student Projects">
+                    <div class="slide-caption">
+                        <h3 style="margin: 0; font-size: 1.1rem;">Collaborative Campus Micro-Gigs</h3>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.85rem; color: #cbd5e1;">Work together on real engineering pipelines and portfolio items.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=80" alt="Tech & Coding Opportunities">
+                    <div class="slide-caption">
+                        <h3 style="margin: 0; font-size: 1.1rem;">Earn While Learning</h3>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.85rem; color: #cbd5e1;">Get rewarded for Python scraping, UI design, and technical writing.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80" alt="Skill Verification">
+                    <div class="slide-caption">
+                        <h3 style="margin: 0; font-size: 1.1rem;">Verified Student Credentials</h3>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.85rem; color: #cbd5e1;">Build direct social proof with automatic metric verification badges.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-dots">
+                <span class="dot active" onclick="goToSlide(0)"></span>
+                <span class="dot" onclick="goToSlide(1)"></span>
+                <span class="dot" onclick="goToSlide(2)"></span>
+            </div>
+        </section>
+
+        <!-- PLATFORM METRICS DASHBOARD (WITH INCREMENTING NUMBER ANIMATION & CARD HOVER) -->
         <section id="dashboard-section" style="margin-bottom: 3rem;">
-            <h2 style="margin-bottom: 1.2rem; color: var(--text-primary); font-size: 1.5rem;">Platform Metrics Control Dashboard</h2>
+            <h2 style="margin-bottom: 1.2rem; color: var(--text-primary, #f8fafc); font-size: 1.5rem;">Platform Metrics Control Dashboard</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem;">
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Total platform registrations verified across all active campus cohorts">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Total Users</div>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-blue);">1,240</div>
+                <div class="anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Total platform registrations verified across all active campus cohorts">
+                    <div style="font-size: 0.85rem; color: var(--text-muted, #94a3b8); margin-bottom: 0.3rem;">Total Users</div>
+                    <div class="counter-number" data-target="1240" style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-blue, #3b82f6);">0</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Users with active session state signatures within past 24 hours">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Active Users</div>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-green);">412</div>
+                <div class="anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Users with active session state signatures within past 24 hours">
+                    <div style="font-size: 0.85rem; color: var(--text-muted, #94a3b8); margin-bottom: 0.3rem;">Active Users</div>
+                    <div class="counter-number" data-target="412" style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-green, #22c55e);">0</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Gross volume transacted through processing system micro-gateways">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Total Revenue</div>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-purple);">$3,840</div>
+                <div class="anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Gross volume transacted through processing system micro-gateways">
+                    <div style="font-size: 0.85rem; color: var(--text-muted, #94a3b8); margin-bottom: 0.3rem;">Total Revenue</div>
+                    <div class="counter-number" data-target="3840" data-prefix="$" style="font-size: 1.8rem; font-weight: bold; color: var(--highlight-purple, #a855f7);">$0</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Completed escrow milestone distributions fully authorized">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Transactions</div>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--text-primary);">189</div>
+                <div class="anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Completed escrow milestone distributions fully authorized">
+                    <div style="font-size: 0.85rem; color: var(--text-muted, #94a3b8); margin-bottom: 0.3rem;">Transactions</div>
+                    <div class="counter-number" data-target="189" style="font-size: 1.8rem; font-weight: bold; color: var(--text-primary, #f8fafc);">0</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="System diagnostic notices currently queued for user review">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Notifications</div>
+                <div class="anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="System diagnostic notices currently queued for user review">
+                    <div style="font-size: 0.85rem; color: var(--text-muted, #94a3b8); margin-bottom: 0.3rem;">Notifications</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: #f59e0b;">5 Active</div>
                 </div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Items awaiting developer structural source verification passes">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Pending Tasks</div>
+                <div class="anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: var(--card-shadow);" data-tooltip="Items awaiting developer structural source verification passes">
+                    <div style="font-size: 0.85rem; color: var(--text-muted, #94a3b8); margin-bottom: 0.3rem;">Pending Tasks</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: #ef4444;">3 Blocks</div>
                 </div>
             </div>
         </section>
 
-        <div class="main_content_area">
-            <aside class="sidebar_filters glassmorphism">
-                <h2>Filters</h2>
-                <div class="filter_tags">
+        <div class="main_content_area" style="display: grid; grid-template-columns: 260px 1fr; gap: 2rem;">
+            <aside class="sidebar_filters glassmorphism" style="padding: 1.5rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 10px;">
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">Filters</h2>
+                <div class="filter_tags" style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <button class="filter_btn active_filter" onclick="filterCategory('All')">All Categories</button>
                     <button class="filter_btn" onclick="filterCategory('Coding')">Coding</button>
                     <button class="filter_btn" onclick="filterCategory('Design')">Design</button>
                     <button class="filter_btn" onclick="filterCategory('Writing')">Writing</button>
                 </div>
 
-                <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
-                    <h3 style="color: var(--text-primary); font-size: 1.1rem; margin-bottom: 0.6rem;">Core Features</h3>
-                    <ul style="color: var(--text-muted); padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+                <div style="margin-top: 2rem; border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding-top: 1.2rem;">
+                    <h3 style="color: var(--text-primary, #f8fafc); font-size: 1.1rem; margin-bottom: 0.6rem;">Core Features</h3>
+                    <ul style="color: var(--text-muted, #94a3b8); padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
                         <li>Dynamic Query Filters</li>
                         <li>Persistent Cache Sync</li>
                         <li>Isolated Security Sandbox</li>
@@ -152,9 +408,9 @@
                     </ul>
                 </div>
 
-                <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
-                    <h3 style="color: var(--text-primary); font-size: 1.1rem; margin-bottom: 0.6rem;">Platform Services</h3>
-                    <ol style="color: var(--text-muted); padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+                <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding-top: 1.2rem;">
+                    <h3 style="color: var(--text-primary, #f8fafc); font-size: 1.1rem; margin-bottom: 0.6rem;">Platform Services</h3>
+                    <ol style="color: var(--text-muted, #94a3b8); padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
                         <li>Automated Source Reviewing</li>
                         <li>Vector Graphics Render Pipelines</li>
                         <li>Structured Layout Compilation</li>
@@ -164,61 +420,61 @@
             </aside>
 
             <section class="gig_grid_container">
-                <div class="gig_grid_header">
+                <div class="gig_grid_header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h2>Available Gigs</h2>
                     <span class="view_options">View: Grid</span>
                 </div>
 
-                <div class="gig_grid" id="liveFeedContainer">
-                    <div class="gig_card card_animation_on_hover">
-                        <h3>Build a Python Data Scraper</h3>
-                        <p class="gig_desc">Extract key products from e-commerce sites.</p>
-                        <div class="skill_tags">
-                            <span>Python</span>
-                            <span>Data</span>
+                <div class="gig_grid" id="liveFeedContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <div class="gig_card anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.5rem; border-radius: 10px;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Build a Python Data Scraper</h3>
+                        <p class="gig_desc" style="color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin-bottom: 1rem;">Extract key products from e-commerce sites.</p>
+                        <div class="skill_tags" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Python</span>
+                            <span style="background: rgba(168, 85, 247, 0.2); color: #a855f7; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Data</span>
                         </div>
-                        <div class="gig_footer">
-                            <span class="budget">$40</span>
-                            <button class="apply_btn" onclick="applyGig('Python Scraper')" data-tooltip="Submit evaluation profile token to project creator">Apply</button>
+                        <div class="gig_footer" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="budget" style="font-weight: bold; font-size: 1.2rem; color: #22c55e;">$40</span>
+                            <button class="apply_btn" onclick="applyGig('Python Scraper')" data-tooltip="Submit evaluation profile token to project creator" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Apply</button>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER WITH DIAGNOSTIC HOVER TOOLTIPS -->
+        <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER -->
         <section class="stats-grid" id="statisticsDisplayGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Total student entries matching campus application array lengths">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Today's Bidders</p>
-                <h3 id="counterBidders" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
+            <div class="stats-card anim-card-hover" style="position: relative; background: var(--card-bg, #1e293b); padding: 1.5rem; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px; text-align: center;" data-tooltip="Total student entries matching campus application array lengths">
+                <p style="color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin: 0;">Today's Bidders</p>
+                <h3 id="counterBidders" class="counter-metric counter-number" data-target="24" style="font-size: 2rem; color: var(--text-primary, #f8fafc); margin: 0.5rem 0 0 0;">0</h3>
             </div>
             
-            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Total development modules successfully shifted to 'Accepted' states">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Active Compilations</p>
-                <h3 id="counterCompilations" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-blue); margin: 0.5rem 0 0 0;">0</h3>
+            <div class="stats-card anim-card-hover" style="position: relative; background: var(--card-bg, #1e293b); padding: 1.5rem; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px; text-align: center;" data-tooltip="Total development modules successfully shifted to 'Accepted' states">
+                <p style="color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin: 0;">Active Compilations</p>
+                <h3 id="counterCompilations" class="counter-metric counter-number" data-target="8" style="font-size: 2rem; color: var(--highlight-blue, #3b82f6); margin: 0.5rem 0 0 0;">0</h3>
             </div>
             
-            <div class="stats-card" id="earningsCard" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Accumulated income generated across valid client balance pipelines">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Total Earnings ($)</p>
-                <h3 id="counterEarnings" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--highlight-purple); margin: 0.5rem 0 0 0;">0</h3>
+            <div class="stats-card anim-card-hover" id="earningsCard" style="position: relative; background: var(--card-bg, #1e293b); padding: 1.5rem; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px; text-align: center;" data-tooltip="Accumulated income generated across valid client balance pipelines">
+                <p style="color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin: 0;">Total Earnings ($)</p>
+                <h3 id="counterEarnings" class="counter-metric counter-number" data-target="1181" data-prefix="$" style="font-size: 2rem; color: var(--highlight-purple, #a855f7); margin: 0.5rem 0 0 0;">$0</h3>
             </div>
             
-            <div class="stats-card" style="position: relative; background: var(--card-bg); padding: var(--spacing-box); border: 1px solid var(--border-color); border-radius: 8px; text-align: center;" data-tooltip="Total open job allocations tracked within local engine variables">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Open Gig Postings</p>
-                <h3 id="counterGigs" class="counter-metric" data-target="0" style="font-size: 2rem; color: var(--text-primary); margin: 0.5rem 0 0 0;">0</h3>
+            <div class="stats-card anim-card-hover" style="position: relative; background: var(--card-bg, #1e293b); padding: 1.5rem; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px; text-align: center;" data-tooltip="Total open job allocations tracked within local engine variables">
+                <p style="color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin: 0;">Open Gig Postings</p>
+                <h3 id="counterGigs" class="counter-metric counter-number" data-target="15" style="font-size: 2rem; color: var(--text-primary, #f8fafc); margin: 0.5rem 0 0 0;">0</h3>
             </div>
         </section>
 
-        <section class="contact-section" style="margin-top: 3rem; padding: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px;">
-            <h3 style="color: var(--highlight-blue); margin-bottom: 1.5rem;">CampusGig Engineering Hub</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; min-width: 280px;">
+        <section class="contact-section" style="margin-top: 3rem; padding: 2rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px;">
+            <h3 style="color: var(--highlight-blue, #3b82f6); margin-bottom: 1.5rem;">CampusGig Engineering Hub</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
                 <div>
                     <p style="color: var(--text-main); margin: 0 0 0.5rem 0;"><strong>Address:</strong> Tech Core Block C, Lab 4, University Campus</p>
                     <p style="color: var(--text-main); margin: 0 0 0.5rem 0;"><strong>Support Line:</strong> +91 98765 43210</p>
                     <p style="color: var(--text-main); margin: 0 0 1.5rem 0;"><strong>Help Desk:</strong> yuva.dev.support@campusgig.edu</p>
                     <div style="display: flex; gap: 1rem;">
-                        <a href="#" style="color: var(--highlight-purple); text-decoration: none; font-size: 0.9rem;">GitHub Net</a>
-                        <a href="#" style="color: var(--highlight-purple); text-decoration: none; font-size: 0.9rem;">Developer Slack</a>
+                        <a href="#" style="color: var(--highlight-purple, #a855f7); text-decoration: none; font-size: 0.9rem;">GitHub Net</a>
+                        <a href="#" style="color: var(--highlight-purple, #a855f7); text-decoration: none; font-size: 0.9rem;">Developer Slack</a>
                     </div>
                 </div>
                 <div>
@@ -230,15 +486,93 @@
             </div>
         </section>
 
-        <button id="scrollToTopBtn" style="position: fixed; bottom: 2rem; right: 2rem; width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--highlight-blue), var(--highlight-purple)); color: #ffffff; border: none; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1000; transition: transform 0.2s;" data-tooltip="Snap viewport layout structure back to header height">
+        <!-- ACCESSIBLE, PROPERLY CENTERED SCROLL TO TOP BUTTON -->
+        <button id="scrollToTopBtn" aria-label="Scroll back to top" data-tooltip="Scroll back to top of page">
             ↑
         </button>
     </main>
 
-    <footer class="main-footer">
+    <footer class="main-footer" style="text-align: center; padding: 2rem; color: var(--text-muted, #94a3b8); font-size: 0.85rem; border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); margin-top: 3rem;">
         <p>&copy; 2026 CampusGig Portal | Designed by YUVA (Register No: 71762307061)</p>
     </footer>
 
+    <!-- INLINE JAVASCRIPT FOR PROGRESS BAR, SLIDER, SCROLL BUTTON & COUNTERS -->
+    <script>
+        // 1. SCROLL PROGRESS BAR LOGIC (Anchored right below header)
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollProgressBar').style.width = scrolled + '%';
+
+            // Scroll To Top Button Reveal Trigger
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            if (winScroll > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+
+        // Scroll To Top Click Action
+        document.getElementById('scrollToTopBtn').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 2. AUTOMATIC IMAGE SLIDER LOGIC
+        let currentSlide = 0;
+        const totalSlides = 3;
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        const dots = document.querySelectorAll('.dot');
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            sliderWrapper.style.transform = `translateX(-${currentSlide * 33.333}%)`;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function autoSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            goToSlide(currentSlide);
+        }
+
+        let slideInterval = setInterval(autoSlide, 4000);
+
+        const sliderContainer = document.getElementById('campusSlider');
+        sliderContainer.addEventListener('mouseenter', () => clearInterval(slideInterval));
+        sliderContainer.addEventListener('mouseleave', () => slideInterval = setInterval(autoSlide, 4000));
+
+        // 3. NUMBER INCREMENT COUNTING ANIMATION ON LOAD / REFRESH
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter-number');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const prefix = counter.getAttribute('data-prefix') || '';
+                const duration = 1500;
+                const steps = 60;
+                const increment = target / steps;
+                let current = 0;
+                const stepTime = duration / steps;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.innerText = prefix + target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        counter.innerText = prefix + Math.floor(current).toLocaleString();
+                    }
+                }, stepTime);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', animateCounters);
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
