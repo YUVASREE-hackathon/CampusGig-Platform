@@ -271,7 +271,132 @@ body {
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(56, 189, 248, 0.1);
     border-color: var(--highlight-blue);
 }
+/* ==========================================================================
+   CSS 2D/3D TRANSFORMS DEMONSTRATIONS
+   ========================================================================== */
 
+/* 1. Translate Effect (Card hover shifting up and right) */
+.fx-translate {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fx-translate:hover {
+    transform: translate(10px, -8px);
+}
+
+/* 2. Rotate Effect (Icon rotational spin) */
+.fx-rotate {
+    display: inline-block;
+    transition: transform 0.4s ease;
+}
+.fx-rotate:hover {
+    transform: rotate(45deg);
+}
+
+/* 3. Scale Effect (Card / Icon scaling expansion) */
+.fx-scale {
+    transition: transform 0.3s ease;
+}
+.fx-scale:hover {
+    transform: scale(1.08);
+}
+
+/* 4. Skew Effect (Geometric slant on badges/icons) */
+.fx-skew {
+    transition: transform 0.3s ease;
+}
+.fx-skew:hover {
+    transform: skewX(-12deg) skewY(-2deg);
+}
+
+/* Combined Transform Showcase: 3D Flip Card Effect */
+.card-3d-wrapper {
+    perspective: 1000px;
+}
+.card-3d-inner {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+.card-3d-wrapper:hover .card-3d-inner {
+    transform: rotateY(180deg) scale(1.02);
+}
+
+
+/* ==========================================================================
+   CSS-ONLY IMAGE & VISUAL EFFECTS
+   ========================================================================== */
+
+/* Wrapper to isolate image bounds for Zoom/Overlay */
+.fx-img-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+}
+
+/* Base Image Styling for Visual Effects */
+.fx-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: filter 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* 1. CSS Image Zoom Effect */
+.fx-img-zoom:hover {
+    transform: scale(1.15);
+}
+
+/* 2. CSS Grayscale Transition Effect */
+.fx-img-grayscale {
+    filter: grayscale(100%);
+}
+.fx-img-grayscale:hover {
+    filter: grayscale(0%);
+}
+
+/* 3. CSS Gaussian Blur Effect */
+.fx-img-blur {
+    filter: blur(4px);
+}
+.fx-img-blur:hover {
+    filter: blur(0px);
+}
+
+/* 4. CSS Opacity Fade Effect */
+.fx-img-opacity {
+    opacity: 0.5;
+}
+.fx-img-opacity:hover {
+    opacity: 1;
+}
+
+/* 5. CSS Pure Overlay Effect (Gradient / Color Tint Reveal) */
+.fx-overlay-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.fx-overlay-wrapper::after {
+    content: "View Micro-Gig Details";
+    position: absolute;
+    inset: 0;
+    background: rgba(59, 130, 246, 0.85); /* Accent color overlay */
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.fx-overlay-wrapper:hover::after {
+    opacity: 1;
+}
 .gig_card h3 {
     font-size: 1.3rem;
     color: var(--text-primary);

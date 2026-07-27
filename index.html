@@ -464,7 +464,88 @@
                 <h3 id="counterGigs" class="counter-metric counter-number" data-target="15" style="font-size: 2rem; color: var(--text-primary, #f8fafc); margin: 0.5rem 0 0 0;">0</h3>
             </div>
         </section>
+<!-- CSS TRANSFORMS & VISUAL EFFECTS DEMO SECTION -->
+<section style="margin: 3rem 0;">
+    <h2 style="color: var(--text-primary, #f8fafc); font-size: 1.5rem; margin-bottom: 1.5rem;">
+        CSS Transforms & Filter FX Showcase
+    </h2>
 
+    <!-- GRID 1: 2D & 3D TRANSFORMS -->
+    <h3 style="color: var(--highlight-blue, #3b82f6); font-size: 1.1rem; margin-bottom: 1rem;">1. Transform Effects</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+        
+        <!-- Translate Card -->
+        <div class="fx-translate" style="background: var(--card-bg, #1e293b); padding: 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+            <h4 style="margin-bottom: 0.4rem; color: #f8fafc;">Translate()</h4>
+            <p style="font-size: 0.85rem; color: #94a3b8;">Moves position relative to X and Y axes on hover.</p>
+        </div>
+
+        <!-- Rotate Icon Card -->
+        <div style="background: var(--card-bg, #1e293b); padding: 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+            <span class="fx-rotate" style="font-size: 2rem; cursor: pointer;">⚙️</span>
+            <h4 style="margin-top: 0.4rem; color: #f8fafc;">Rotate()</h4>
+            <p style="font-size: 0.85rem; color: #94a3b8;">Rotates element by specified degrees on hover.</p>
+        </div>
+
+        <!-- Scale Card -->
+        <div class="fx-scale" style="background: var(--card-bg, #1e293b); padding: 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+            <h4 style="margin-bottom: 0.4rem; color: #f8fafc;">Scale()</h4>
+            <p style="font-size: 0.85rem; color: #94a3b8;">Increases or decreases element dimensions smoothly.</p>
+        </div>
+
+        <!-- Skew Badge Card -->
+        <div class="fx-skew" style="background: var(--card-bg, #1e293b); padding: 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+            <h4 style="margin-bottom: 0.4rem; color: #f8fafc;">Skew()</h4>
+            <p style="font-size: 0.85rem; color: #94a3b8;">Distorts elements along 2D coordinate planes.</p>
+        </div>
+    </div>
+
+    <!-- GRID 2: CSS VISUAL IMAGE EFFECTS -->
+    <h3 style="color: var(--highlight-purple, #a855f7); font-size: 1.1rem; margin-bottom: 1rem;">2. Image Effects (Filters, Zoom & Overlay)</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        
+        <!-- Zoom Effect -->
+        <div>
+            <div class="fx-img-container">
+                <img class="fx-img fx-img-zoom" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80" alt="Zoom Effect">
+            </div>
+            <p style="text-align: center; margin-top: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Image Zoom</p>
+        </div>
+
+        <!-- Grayscale Effect -->
+        <div>
+            <div class="fx-img-container">
+                <img class="fx-img fx-img-grayscale" src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" alt="Grayscale Effect">
+            </div>
+            <p style="text-align: center; margin-top: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Grayscale Hover Reveal</p>
+        </div>
+
+        <!-- Blur Effect -->
+        <div>
+            <div class="fx-img-container">
+                <img class="fx-img fx-img-blur" src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80" alt="Blur Effect">
+            </div>
+            <p style="text-align: center; margin-top: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Gaussian Focus Blur</p>
+        </div>
+
+        <!-- Opacity Effect -->
+        <div>
+            <div class="fx-img-container">
+                <img class="fx-img fx-img-opacity" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80" alt="Opacity Effect">
+            </div>
+            <p style="text-align: center; margin-top: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Opacity Transition</p>
+        </div>
+
+        <!-- Hover Overlay Effect -->
+        <div>
+            <div class="fx-overlay-wrapper">
+                <img class="fx-img" src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" alt="Overlay Effect">
+            </div>
+            <p style="text-align: center; margin-top: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">CSS Overlay Mask</p>
+        </div>
+
+    </div>
+</section>
         <section class="contact-section" style="margin-top: 3rem; padding: 2rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px;">
             <h3 style="color: var(--highlight-blue, #3b82f6); margin-bottom: 1.5rem;">CampusGig Engineering Hub</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
