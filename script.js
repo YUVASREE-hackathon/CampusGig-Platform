@@ -51,12 +51,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // UI Rendering Execution Trees with Safety Buffers
     initializeRoleView();
     updateUserInterfaceCounters(currentUser.role === 'admin' ? 'Admin' : 'Applicant');
+    setupGigSearchAndFilterBar();
     renderJobFeed();
     renderAdminDashboard();
     renderApplicantMyGigsPortfolio(); 
     renderNotifications();
     setupProfileDataBinding();
     setupDragAndDropEnvironment();
+    updateAppliedGigsCounterBadge();
 
     // Hydrate form fields and editable biography area from localStorage cache
     loadSavedProfileData();
@@ -67,6 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
         initializeAsynchronousCounters();
     }
     initializeScrollInterceptor();
+
+    /* ==== NEW EVENT-DRIVEN FEATURES MODULE BOOTUP ==== */
+    setupMediaPlayerEngine();          // Client Brief Pitch / Video Player
+    setupAuthFormEngine();             // Registration / Job Posting form validation
+    setupSkillAssessmentEngine();      // Skill Assessment / Coding Verification quiz
+    setupGigDiscussionEngine();        // Gig Discussion & Inquiry section
+    renderFreelancerDashboard();       // Freelancer Dashboard & Earnings Tracker
 });
 
 function syncToLocalStorage() {
@@ -252,14 +261,51 @@ function setupPostingFormBinding() {
 }
 
 /* --- MAIN WORK FEED BROWSE SYSTEM (WITH DOMAIN BADGES) --- */
+/* Search / Filter state used by the Gig Search & Category Filter Bar */
+let gigSearchQuery = "";
+let gigSelectedCategory = "All";
+let gigSelectedBudgetRange = "All";
+let bookmarkedGigIds = JSON.parse(localStorage.getItem('campus_bookmarks')) || [];
+
+function matchesBudgetRange(budget, range) {
+    if (range === "under50") return budget < 50;
+    if (range === "50to150") return budget >= 50 && budget <= 150;
+    if (range === "over150") return budget > 150;
+    return true; // "All"
+}
+
+function getFilteredGigList() {
+    const query = gigSearchQuery.trim().toLowerCase();
+    return gigs.filter(job => {
+        const matchesCategory = gigSelectedCategory === "All" || (job.category || "General") === gigSelectedCategory;
+        const matchesBudget = matchesBudgetRange(job.budget || 0, gigSelectedBudgetRange);
+        const haystack = `${job.title} ${job.desc || ""} ${(job.skills || []).join(" ")}`.toLowerCase();
+        const matchesQuery = query === "" || haystack.includes(query);
+        return matchesCategory && matchesBudget && matchesQuery;
+    });
+}
+
 function renderJobFeed() {
     const feed = document.getElementById("liveFeedContainer");
     if (!feed) return; 
     feed.innerHTML = "";
 
     gigs = JSON.parse(localStorage.getItem('campus_gigs')) || defaultGigs;
+    bookmarkedGigIds = JSON.parse(localStorage.getItem('campus_bookmarks')) || [];
 
-    gigs.forEach(job => {
+    const visibleGigs = getFilteredGigList();
+
+    const resultCountEl = document.getElementById("gigSearchResultCount");
+    if (resultCountEl) {
+        resultCountEl.textContent = `Showing ${visibleGigs.length} of ${gigs.length} gig${gigs.length === 1 ? "" : "s"}`;
+    }
+
+    if (visibleGigs.length === 0) {
+        feed.innerHTML = `<p style="color:var(--text-muted); font-style:italic; grid-column: 1 / -1; text-align:center; padding:2rem;">No gigs match your current search & filter criteria.</p>`;
+        return;
+    }
+
+    visibleGigs.forEach(job => {
         const hasApplied = applications.some(app => app.jobId === job.id && app.applicantEmail === currentUser.email);
         let buttonMarkup = "";
 
@@ -268,13 +314,17 @@ function renderJobFeed() {
         } else {
             buttonMarkup = hasApplied 
                 ? `<button class="apply_btn" style="background:var(--highlight-green)!important; color:#000!important; cursor:not-allowed;" disabled>✓ Applied</button>`
-                : `<button class="apply_btn" onclick="openApplicationModal('${job.id}')">Apply Now</button>`;
+                : `<button class="apply_btn gig-apply-now-btn" data-job-id="${job.id}">Apply Now</button>`;
         }
+
+        const isBookmarked = bookmarkedGigIds.includes(job.id);
 
         const card = document.createElement("div");
         card.className = "gig_card card_animation_on_hover";
+        card.dataset.jobId = job.id;
         card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+            <span class="gig-bookmark-star${isBookmarked ? ' bookmarked' : ''}" data-job-id="${job.id}" data-tooltip="${isBookmarked ? 'Remove bookmark' : 'Bookmark this gig'}" role="button" aria-label="Toggle bookmark">${isBookmarked ? '★' : '☆'}</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; padding-right: 1.6rem;">
                 <h3 style="margin: 0;">${job.title}</h3>
                 <span style="background: rgba(56, 189, 248, 0.15); color: var(--highlight-blue); font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); text-transform: uppercase;">
                     ${job.category || 'General'}
@@ -286,9 +336,134 @@ function renderJobFeed() {
                 <span class="budget">$${job.budget}</span>
                 ${buttonMarkup}
             </div>
+            <div class="gig-hover-overlay">
+                <h4>📋 Full Project Requirements</h4>
+                <p>${job.desc || "No detailed description was provided by the client for this listing."}</p>
+                <p style="margin-top:0.4rem;"><strong>Skills:</strong> ${(job.skills && job.skills.length) ? job.skills.join(", ") : "General"}</p>
+                <p><strong>Deliverable Timeline:</strong> ${job.totalAssignments || 1} sequential milestone${(job.totalAssignments || 1) > 1 ? "s" : ""}, submitted one at a time for review.</p>
+                <span class="overlay-tag">Budget: $${job.budget}</span>
+            </div>
         `;
         feed.appendChild(card);
+
+        // mouseover / mouseout -> show/hide full requirement preview overlay
+        const overlayEl = card.querySelector(".gig-hover-overlay");
+        card.addEventListener("mouseover", () => {
+            if (overlayEl) overlayEl.classList.add("force-visible");
+        });
+        card.addEventListener("mouseout", () => {
+            if (overlayEl) overlayEl.classList.remove("force-visible");
+        });
+
+        // click on bookmark star -> toggle filled/empty + persist
+        const starEl = card.querySelector(".gig-bookmark-star");
+        if (starEl) {
+            starEl.addEventListener("click", (event) => {
+                event.stopPropagation();
+                toggleGigBookmark(job.id, starEl);
+            });
+        }
+
+        // click on Apply Now -> adds to applied list & updates header counter badge
+        const applyBtn = card.querySelector(".gig-apply-now-btn");
+        if (applyBtn) {
+            applyBtn.addEventListener("click", () => openApplicationModal(job.id));
+        }
     });
+
+    updateAppliedGigsCounterBadge();
+}
+
+/* click on bookmark star icon -> toggles between empty (☆) and filled (★) states */
+function toggleGigBookmark(jobId, starElement) {
+    bookmarkedGigIds = JSON.parse(localStorage.getItem('campus_bookmarks')) || [];
+    const index = bookmarkedGigIds.indexOf(jobId);
+    if (index === -1) {
+        bookmarkedGigIds.push(jobId);
+    } else {
+        bookmarkedGigIds.splice(index, 1);
+    }
+    localStorage.setItem('campus_bookmarks', JSON.stringify(bookmarkedGigIds));
+
+    const nowBookmarked = bookmarkedGigIds.includes(jobId);
+    if (starElement) {
+        starElement.textContent = nowBookmarked ? "★" : "☆";
+        starElement.classList.toggle("bookmarked", nowBookmarked);
+        starElement.setAttribute("data-tooltip", nowBookmarked ? "Remove bookmark" : "Bookmark this gig");
+    }
+}
+
+/* Updates the "Browse Gigs" header counter badge with the applicant's applied-gig count */
+function updateAppliedGigsCounterBadge() {
+    const badge = document.getElementById("appliedGigsCounterBadge");
+    if (!badge) return;
+    const liveApps = JSON.parse(localStorage.getItem('campus_applications')) || [];
+    const myAppliedCount = liveApps.filter(app => app.applicantEmail === currentUser.email).length;
+    if (myAppliedCount > 0) {
+        badge.textContent = myAppliedCount;
+        badge.style.display = "inline-flex";
+    } else {
+        badge.style.display = "none";
+    }
+}
+
+/* --- GIG SEARCH & CATEGORY FILTER BAR WIRING --- */
+function setupGigSearchAndFilterBar() {
+    const searchInput = document.getElementById("gigSearchInput");
+    const categorySelect = document.getElementById("gigCategorySelect");
+    const budgetSelect = document.getElementById("gigBudgetSelect");
+    if (!searchInput && !categorySelect && !budgetSelect) return; // not on this page
+
+    // input on the search box -> filters listed gigs in real time as the user types
+    if (searchInput) {
+        searchInput.addEventListener("input", (event) => {
+            gigSearchQuery = event.target.value;
+            renderJobFeed();
+        });
+
+        // keydown (Enter key) inside the search box -> triggers an explicit search execution
+        searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                gigSearchQuery = searchInput.value;
+                renderJobFeed();
+                const resultCountEl = document.getElementById("gigSearchResultCount");
+                if (resultCountEl) {
+                    resultCountEl.style.color = "var(--highlight-blue)";
+                    setTimeout(() => { resultCountEl.style.color = "var(--text-muted)"; }, 600);
+                }
+            }
+        });
+    }
+
+    // change on category <select> dropdown -> filters gig cards accordingly
+    if (categorySelect) {
+        categorySelect.addEventListener("change", (event) => {
+            gigSelectedCategory = event.target.value;
+            // Keep the legacy sidebar filter buttons visually in sync when present
+            document.querySelectorAll(".filter_btn").forEach(btn => btn.classList.remove("active_filter"));
+            renderJobFeed();
+        });
+    }
+
+    // change on budget <select> dropdown -> filters gig cards accordingly
+    if (budgetSelect) {
+        budgetSelect.addEventListener("change", (event) => {
+            gigSelectedBudgetRange = event.target.value;
+            renderJobFeed();
+        });
+    }
+}
+
+/* Legacy sidebar category buttons (already referenced via onclick in the markup) */
+function filterCategory(category) {
+    gigSelectedCategory = category;
+    document.querySelectorAll(".filter_btn").forEach(btn => btn.classList.remove("active_filter"));
+    const matchedBtn = Array.from(document.querySelectorAll(".filter_btn")).find(btn => btn.textContent.trim().toLowerCase().startsWith(category.toLowerCase()) || (category === "All" && btn.textContent.includes("All")));
+    if (matchedBtn) matchedBtn.classList.add("active_filter");
+    const categorySelect = document.getElementById("gigCategorySelect");
+    if (categorySelect) categorySelect.value = category;
+    renderJobFeed();
 }
 
 /* --- APPLICATION MODAL INTERACTION CORE --- */
@@ -918,4 +1093,744 @@ function processLogout() {
 
 function toggleSystemTheme() { 
     document.body.classList.toggle("theme-light"); 
+}
+
+/* ==========================================================================
+   ==========================================================================
+   NEW EVENT-DRIVEN FEATURES MODULE
+   Implements the 7 required interactive assignment areas using
+   addEventListener(), event delegation, and preventDefault().
+   ==========================================================================
+   ========================================================================== */
+
+/* ==========================================================================
+   2. CLIENT BRIEF PITCH / VIDEO PLAYER
+   ========================================================================== */
+function setupMediaPlayerEngine() {
+    const video = document.getElementById("briefVideoPlayer");
+    const playPauseBtn = document.getElementById("mediaPlayPauseBtn");
+    const volumeSlider = document.getElementById("mediaVolumeSlider");
+    const progressTrack = document.getElementById("mediaProgressTrack");
+    const progressFill = document.getElementById("mediaProgressFill");
+    const timeLabel = document.getElementById("mediaTimeLabel");
+
+    if (!video || !playPauseBtn) return; // media player not present on this page
+
+    function formatTime(seconds) {
+        if (!isFinite(seconds) || isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
+        return `${mins}:${secs}`;
+    }
+
+    // click on the Play/Pause button -> toggles video playback
+    playPauseBtn.addEventListener("click", () => {
+        if (video.paused || video.ended) {
+            video.play();
+            playPauseBtn.textContent = "⏸";
+            playPauseBtn.setAttribute("data-tooltip", "Pause playback");
+        } else {
+            video.pause();
+            playPauseBtn.textContent = "▶";
+            playPauseBtn.setAttribute("data-tooltip", "Resume playback");
+        }
+    });
+
+    // change on the volume range slider -> adjusts media volume dynamically
+    if (volumeSlider) {
+        volumeSlider.addEventListener("change", () => {
+            video.volume = parseFloat(volumeSlider.value);
+        });
+        // also respond live while dragging for a smoother UX (input event)
+        volumeSlider.addEventListener("input", () => {
+            video.volume = parseFloat(volumeSlider.value);
+        });
+    }
+
+    // timeupdate on the video element -> updates the progress bar as media plays
+    video.addEventListener("timeupdate", () => {
+        if (video.duration > 0 && progressFill) {
+            const pct = (video.currentTime / video.duration) * 100;
+            progressFill.style.width = pct + "%";
+        }
+        if (timeLabel) {
+            timeLabel.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+        }
+    });
+
+    video.addEventListener("loadedmetadata", () => {
+        if (timeLabel) timeLabel.textContent = `0:00 / ${formatTime(video.duration)}`;
+    });
+
+    video.addEventListener("ended", () => {
+        playPauseBtn.textContent = "▶";
+        playPauseBtn.setAttribute("data-tooltip", "Replay video");
+    });
+
+    // BONUS: click on the progress bar to seek
+    if (progressTrack) {
+        progressTrack.addEventListener("click", (event) => {
+            if (!video.duration) return;
+            const rect = progressTrack.getBoundingClientRect();
+            const clickRatio = (event.clientX - rect.left) / rect.width;
+            video.currentTime = Math.max(0, Math.min(1, clickRatio)) * video.duration;
+        });
+    }
+}
+
+/* ==========================================================================
+   3. STUDENT FREELANCER REGISTRATION / JOB POSTING FORM (auth.html)
+   ========================================================================== */
+function setupAuthFormEngine() {
+    const authForm = document.getElementById("authForm");
+    if (!authForm) return; // not on the auth page
+
+    const emailField = document.getElementById("authEmail");
+    const passwordField = document.getElementById("authPassword");
+    const confirmField = document.getElementById("authConfirmPassword");
+    const confirmGroup = document.getElementById("confirmPasswordGroup");
+    const emailError = document.getElementById("authEmailError");
+    const passwordError = document.getElementById("authPasswordError");
+    const confirmError = document.getElementById("authConfirmError");
+    const confirmSuccess = document.getElementById("authConfirmSuccess");
+    const confirmToast = document.getElementById("authConfirmToast");
+
+    // Show the Confirm Password field only while in SIGNUP / Register mode
+    function syncConfirmPasswordVisibility() {
+        const isSignup = document.getElementById("fullNameGroup") &&
+            document.getElementById("fullNameGroup").style.display !== "none";
+        if (confirmGroup) confirmGroup.style.display = isSignup ? "block" : "none";
+        if (!isSignup && confirmField) confirmField.value = "";
+    }
+    // Run once on load, and again whenever tabs are switched (switchAuthMode calls this too)
+    syncConfirmPasswordVisibility();
+    window.__syncConfirmPasswordVisibility = syncConfirmPasswordVisibility;
+
+    // blur on Email field -> validates format & shows inline error message
+    if (emailField) {
+        emailField.addEventListener("blur", () => {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const valid = emailPattern.test(emailField.value.trim());
+            emailField.classList.toggle("input-invalid", !valid);
+            emailField.classList.toggle("input-valid", valid && emailField.value.trim() !== "");
+            if (emailError) emailError.classList.toggle("visible", !valid);
+        });
+        emailField.addEventListener("input", () => {
+            if (emailField.classList.contains("input-invalid")) {
+                emailField.classList.remove("input-invalid");
+                if (emailError) emailError.classList.remove("visible");
+            }
+        });
+    }
+
+    // blur on Password field -> validates format & shows inline error message
+    if (passwordField) {
+        passwordField.addEventListener("blur", () => {
+            const valid = passwordField.value.length >= 6;
+            passwordField.classList.toggle("input-invalid", !valid);
+            passwordField.classList.toggle("input-valid", valid);
+            if (passwordError) passwordError.classList.toggle("visible", !valid);
+        });
+        passwordField.addEventListener("input", () => {
+            if (passwordField.classList.contains("input-invalid")) {
+                passwordField.classList.remove("input-invalid");
+                if (passwordError) passwordError.classList.remove("visible");
+            }
+            // Re-check the confirm field live if the user edits the original password afterwards
+            if (confirmField && confirmField.value) confirmField.dispatchEvent(new Event("input"));
+        });
+    }
+
+    // input on "Confirm Password" -> checks live whether the value matches the Password field
+    if (confirmField) {
+        confirmField.addEventListener("input", () => {
+            if (confirmField.value === "") {
+                confirmField.classList.remove("input-invalid", "input-valid");
+                if (confirmError) confirmError.classList.remove("visible");
+                if (confirmSuccess) confirmSuccess.classList.remove("visible");
+                return;
+            }
+            const matches = confirmField.value === passwordField.value;
+            confirmField.classList.toggle("input-invalid", !matches);
+            confirmField.classList.toggle("input-valid", matches);
+            if (confirmError) confirmError.classList.toggle("visible", !matches);
+            if (confirmSuccess) confirmSuccess.classList.toggle("visible", matches);
+        });
+    }
+
+    // submit on the form -> prevents default submission, validates all fields, shows confirmation
+    authForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const isSignup = document.getElementById("fullNameGroup") &&
+            document.getElementById("fullNameGroup").style.display !== "none";
+
+        let isValid = true;
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailField.value.trim())) {
+            isValid = false;
+            emailField.classList.add("input-invalid");
+            if (emailError) emailError.classList.add("visible");
+        }
+
+        if (passwordField.value.length < 6) {
+            isValid = false;
+            passwordField.classList.add("input-invalid");
+            if (passwordError) passwordError.classList.add("visible");
+        }
+
+        if (isSignup && confirmField) {
+            if (confirmField.value !== passwordField.value || confirmField.value === "") {
+                isValid = false;
+                confirmField.classList.add("input-invalid");
+                if (confirmError) confirmError.classList.add("visible");
+            }
+        }
+
+        if (!isValid) {
+            if (confirmToast) confirmToast.classList.remove("visible");
+            return;
+        }
+
+        // Delegate to the existing auth action processor (role/session bootstrap), if present
+        if (typeof executeAuthAction === "function") {
+            executeAuthAction(event, { skipPreventDefault: true });
+        }
+
+        if (confirmToast) {
+            confirmToast.textContent = isSignup
+                ? "✅ Registration successful! Your CampusGig account has been created."
+                : "✅ Signed in successfully! Redirecting to your dashboard...";
+            confirmToast.classList.add("visible");
+        }
+    });
+}
+
+/* Tab toggle between Sign In / Register modes (referenced by existing onclick markup) */
+function switchAuthMode(mode) {
+    const tabLogin = document.getElementById("tabLogin");
+    const tabSignup = document.getElementById("tabSignup");
+    const fullNameGroup = document.getElementById("fullNameGroup");
+    const roleGroup = document.getElementById("roleGroup");
+    const rememberMeContainer = document.getElementById("rememberMeContainer");
+    const submitBtn = document.getElementById("authSubmitBtn");
+
+    const isSignup = mode === "SIGNUP";
+
+    if (tabLogin) tabLogin.classList.toggle("active_tab", !isSignup);
+    if (tabSignup) tabSignup.classList.toggle("active_tab", isSignup);
+    if (fullNameGroup) fullNameGroup.style.display = isSignup ? "block" : "none";
+    if (roleGroup) roleGroup.style.display = isSignup ? "block" : "none";
+    if (rememberMeContainer) rememberMeContainer.style.display = isSignup ? "none" : "flex";
+    if (submitBtn) submitBtn.textContent = isSignup ? "Create My Account" : "Access Environment";
+
+    if (typeof window.__syncConfirmPasswordVisibility === "function") {
+        window.__syncConfirmPasswordVisibility();
+    }
+}
+
+/* Finalizes sign-in / registration and hands off to the session layer used across the app */
+function executeAuthAction(event, options) {
+    if (event && !(options && options.skipPreventDefault)) event.preventDefault();
+
+    const emailField = document.getElementById("authEmail");
+    const nameField = document.getElementById("authName");
+    const isSignup = document.getElementById("fullNameGroup") &&
+        document.getElementById("fullNameGroup").style.display !== "none";
+
+    const sessionUser = {
+        email: emailField ? emailField.value.trim() : "student.yuva@cit.edu.in",
+        role: "applicant",
+        name: (isSignup && nameField && nameField.value.trim()) ? nameField.value.trim() : "YUVASREE I"
+    };
+
+    sessionStorage.setItem('active_user', JSON.stringify(sessionUser));
+
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 900);
+}
+
+/* ==========================================================================
+   4. SKILL ASSESSMENT / CODING VERIFICATION MODULE (skill-test.html)
+   ========================================================================== */
+const skillQuizBank = [
+    {
+        id: "q1",
+        question: "Which JavaScript method attaches an event handler without overwriting existing inline handlers?",
+        options: ["element.onclick = fn", "element.addEventListener('click', fn)", "element.setAttribute('onclick', fn)", "element.click(fn)"],
+        correctIndex: 1
+    },
+    {
+        id: "q2",
+        question: "Which method call stops a form from performing its default page-reload submission?",
+        options: ["event.stopPropagation()", "event.cancel()", "event.preventDefault()", "form.stop()"],
+        correctIndex: 2
+    },
+    {
+        id: "q3",
+        question: "In CSS, which property is used to make a flex container's items wrap onto new lines?",
+        options: ["flex-direction", "flex-wrap", "flex-grow", "align-content"],
+        correctIndex: 1
+    },
+    {
+        id: "q4",
+        question: "Event delegation relies on which key characteristic of the DOM?",
+        options: ["Event bubbling up through ancestor elements", "CSS specificity", "Local storage persistence", "The viewport meta tag"],
+        correctIndex: 0
+    },
+    {
+        id: "q5",
+        question: "Which array method returns a NEW array containing only elements that pass a test function?",
+        options: ["Array.map()", "Array.reduce()", "Array.filter()", "Array.forEach()"],
+        correctIndex: 2
+    }
+];
+
+let quizTimerInterval = null;
+let quizSecondsRemaining = 90;
+let quizUserAnswers = {};
+let quizSubmitted = false;
+
+function renderSkillQuizQuestions() {
+    const container = document.getElementById("quizQuestionsContainer");
+    if (!container) return;
+    container.innerHTML = "";
+
+    skillQuizBank.forEach((q, qIndex) => {
+        const card = document.createElement("div");
+        card.className = "quiz-question-card";
+        card.dataset.questionId = q.id;
+
+        const optionsHtml = q.options.map((opt, optIndex) => `
+            <label class="quiz-option-label" data-option-index="${optIndex}">
+                <input type="radio" name="${q.id}" value="${optIndex}" disabled>
+                <span>${opt}</span>
+            </label>
+        `).join("");
+
+        card.innerHTML = `
+            <h4>Q${qIndex + 1}. ${q.question}</h4>
+            ${optionsHtml}
+        `;
+        container.appendChild(card);
+
+        // change on radio button options -> records the selected answer
+        card.querySelectorAll(`input[name="${q.id}"]`).forEach(radio => {
+            radio.addEventListener("change", (event) => {
+                quizUserAnswers[q.id] = parseInt(event.target.value, 10);
+            });
+        });
+    });
+}
+
+function formatQuizTime(totalSeconds) {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = (totalSeconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs.length === 1 ? "0" + secs : secs}`.replace(/^(\d):/, "0$1:");
+}
+
+function setupSkillAssessmentEngine() {
+    const startBtn = document.getElementById("startAssessmentBtn");
+    const submitBtn = document.getElementById("submitTestBtn");
+    const timerDisplay = document.getElementById("quizTimerDisplay");
+    const resultPanel = document.getElementById("quizResultPanel");
+    const retakeBtn = document.getElementById("retakeQuizBtn");
+
+    if (!startBtn || !submitBtn) return; // not on the skill-test page
+
+    renderSkillQuizQuestions();
+    if (timerDisplay) timerDisplay.textContent = `⏱ ${formatQuizTime(quizSecondsRemaining)}`;
+
+    // BONUS: click on "Start Assessment" begins the countdown timer
+    startBtn.addEventListener("click", () => {
+        startBtn.disabled = true;
+        startBtn.style.display = "none";
+        submitBtn.style.display = "block";
+        quizSubmitted = false;
+        quizUserAnswers = {};
+
+        document.querySelectorAll('#quizQuestionsContainer input[type="radio"]').forEach(radio => {
+            radio.disabled = false;
+        });
+
+        quizSecondsRemaining = 90;
+        if (timerDisplay) timerDisplay.textContent = `⏱ ${formatQuizTime(quizSecondsRemaining)}`;
+
+        // A timer using setInterval that auto-submits the assessment when time expires
+        clearInterval(quizTimerInterval);
+        quizTimerInterval = setInterval(() => {
+            quizSecondsRemaining -= 1;
+            if (timerDisplay) {
+                timerDisplay.textContent = `⏱ ${formatQuizTime(Math.max(quizSecondsRemaining, 0))}`;
+                timerDisplay.classList.toggle("time-critical", quizSecondsRemaining <= 15);
+            }
+            if (quizSecondsRemaining <= 0) {
+                clearInterval(quizTimerInterval);
+                submitSkillAssessment(true);
+            }
+        }, 1000);
+    });
+
+    // click on "Submit Test" -> calculates and displays the score, disabling further radio inputs
+    submitBtn.addEventListener("click", () => submitSkillAssessment(false));
+
+    if (retakeBtn) {
+        retakeBtn.addEventListener("click", () => {
+            clearInterval(quizTimerInterval);
+            quizSubmitted = false;
+            quizUserAnswers = {};
+            quizSecondsRemaining = 90;
+            if (timerDisplay) {
+                timerDisplay.textContent = `⏱ ${formatQuizTime(quizSecondsRemaining)}`;
+                timerDisplay.classList.remove("time-critical");
+            }
+            if (resultPanel) resultPanel.classList.remove("visible");
+            startBtn.disabled = false;
+            startBtn.style.display = "inline-block";
+            submitBtn.style.display = "none";
+            renderSkillQuizQuestions();
+        });
+    }
+}
+
+function submitSkillAssessment(autoSubmitted) {
+    if (quizSubmitted) return;
+    quizSubmitted = true;
+    clearInterval(quizTimerInterval);
+
+    const submitBtn = document.getElementById("submitTestBtn");
+    const resultPanel = document.getElementById("quizResultPanel");
+    const scoreValueEl = document.getElementById("quizScoreValue");
+    const resultMessageEl = document.getElementById("quizResultMessage");
+    const timerDisplay = document.getElementById("quizTimerDisplay");
+
+    let correctCount = 0;
+
+    skillQuizBank.forEach(q => {
+        const userAnswer = quizUserAnswers[q.id];
+        const card = document.querySelector(`.quiz-question-card[data-question-id="${q.id}"]`);
+        if (userAnswer === q.correctIndex) correctCount += 1;
+
+        if (card) {
+            card.querySelectorAll(".quiz-option-label").forEach((label, idx) => {
+                const radio = label.querySelector("input");
+                if (radio) radio.disabled = true; // disabling further radio inputs
+                if (idx === q.correctIndex) label.classList.add("correct-answer");
+                else if (idx === userAnswer) label.classList.add("wrong-answer");
+            });
+        }
+    });
+
+    if (submitBtn) submitBtn.style.display = "none";
+    if (timerDisplay) timerDisplay.classList.remove("time-critical");
+
+    if (scoreValueEl) scoreValueEl.textContent = `${correctCount}/${skillQuizBank.length}`;
+    if (resultMessageEl) {
+        resultMessageEl.textContent = autoSubmitted
+            ? "⏰ Time's up! Your assessment was auto-submitted with your recorded answers."
+            : "✅ Your assessment has been submitted and graded.";
+    }
+    if (resultPanel) resultPanel.classList.add("visible");
+}
+
+/* ==========================================================================
+   6. GIG DISCUSSION & INQUIRY SECTION (index.html)
+   ========================================================================== */
+let gigDiscussionThread = JSON.parse(localStorage.getItem('campus_gig_discussion')) || [
+    {
+        id: "cmt-seed-1",
+        author: "admin.desk@cit.edu.in",
+        message: "Please make sure your scraper respects robots.txt for all target domains before submitting.",
+        timestamp: "9:02 AM",
+        replies: []
+    }
+];
+
+function persistGigDiscussionThread() {
+    localStorage.setItem('campus_gig_discussion', JSON.stringify(gigDiscussionThread));
+}
+
+function renderGigDiscussionThread() {
+    const container = document.getElementById("discussionThreadContainer");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (gigDiscussionThread.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted); font-style:italic; font-size:0.85rem;">No questions posted yet. Be the first to ask!</p>`;
+        return;
+    }
+
+    gigDiscussionThread.forEach(comment => {
+        const item = document.createElement("div");
+        item.className = "comment-thread-item";
+        item.dataset.commentId = comment.id;
+
+        const repliesHtml = (comment.replies || []).map(reply => `
+            <div class="nested-reply-item">
+                <span class="comment-author-line">${reply.author}<span class="comment-timestamp">${reply.timestamp}</span></span>
+                <p class="comment-body-text">${reply.message}</p>
+            </div>
+        `).join("");
+
+        item.innerHTML = `
+            <span class="comment-author-line">${comment.author}<span class="comment-timestamp">${comment.timestamp}</span></span>
+            <p class="comment-body-text" data-comment-id="${comment.id}" title="Double-click to edit your comment">${comment.message}</p>
+            <div class="comment-actions">
+                <button type="button" class="comment-reply-link" data-reply-toggle="${comment.id}">↩ Reply</button>
+            </div>
+            <div class="reply-input-box" id="replyBox-${comment.id}">
+                <input type="text" placeholder="Write a reply..." id="replyInput-${comment.id}">
+                <button type="button" class="apply_btn" style="padding:0.4rem 0.8rem; font-size:0.78rem;" data-reply-submit="${comment.id}">Send</button>
+            </div>
+            <div class="nested-replies-container">${repliesHtml}</div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function setupGigDiscussionEngine() {
+    const form = document.getElementById("discussionForm");
+    const container = document.getElementById("discussionThreadContainer");
+    if (!form || !container) return; // not on this page
+
+    renderGigDiscussionThread();
+
+    // submit (Post Comment) -> prevents default reload, appends the new message to the thread
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const nameInput = document.getElementById("discussionNameInput");
+        const msgInput = document.getElementById("discussionMsgInput");
+        if (!nameInput.value.trim() || !msgInput.value.trim()) return;
+
+        gigDiscussionThread.push({
+            id: "cmt-" + Date.now(),
+            author: nameInput.value.trim(),
+            message: msgInput.value.trim(),
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            replies: []
+        });
+        persistGigDiscussionThread();
+        renderGigDiscussionThread();
+        msgInput.value = "";
+    });
+
+    // EVENT DELEGATION: reply nodes are appended dynamically, so listeners live on the container
+    container.addEventListener("click", (event) => {
+        const replyToggleId = event.target.getAttribute("data-reply-toggle");
+        const replySubmitId = event.target.getAttribute("data-reply-submit");
+
+        if (replyToggleId) {
+            const box = document.getElementById(`replyBox-${replyToggleId}`);
+            if (box) box.classList.toggle("visible");
+            return;
+        }
+
+        if (replySubmitId) {
+            const input = document.getElementById(`replyInput-${replySubmitId}`);
+            if (!input || !input.value.trim()) return;
+
+            const parentComment = gigDiscussionThread.find(c => c.id === replySubmitId);
+            if (parentComment) {
+                parentComment.replies = parentComment.replies || [];
+                parentComment.replies.push({
+                    author: currentUser.name,
+                    message: input.value.trim(),
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+                persistGigDiscussionThread();
+                renderGigDiscussionThread();
+            }
+        }
+    });
+
+    // dblclick on a posted comment -> allows the author to edit their message inline
+    container.addEventListener("dblclick", (event) => {
+        const commentId = event.target.getAttribute("data-comment-id");
+        if (!commentId) return;
+
+        const targetComment = gigDiscussionThread.find(c => c.id === commentId);
+        if (!targetComment) return;
+
+        const p = event.target;
+        p.setAttribute("contenteditable", "true");
+        p.focus();
+
+        function commitEdit() {
+            targetComment.message = p.textContent.trim() || targetComment.message;
+            p.removeAttribute("contenteditable");
+            persistGigDiscussionThread();
+            renderGigDiscussionThread();
+            p.removeEventListener("blur", commitEdit);
+        }
+        p.addEventListener("blur", commitEdit);
+    });
+}
+
+/* ==========================================================================
+   7. FREELANCER DASHBOARD & EARNINGS PROGRESS TRACKER (my-gigs.html)
+   ========================================================================== */
+const defaultDashboardProjects = [
+    {
+        id: "dproj-1",
+        title: "Build a Python Data Scraper",
+        client: "admin.desk@cit.edu.in",
+        totalValue: 40,
+        milestones: [
+            { id: "m1", label: "Initial project setup & environment configuration", done: true },
+            { id: "m2", label: "Implement scraping logic for target retail sites", done: false },
+            { id: "m3", label: "Data cleaning & CSV export module", done: false },
+            { id: "m4", label: "Final testing & client handoff", done: false }
+        ]
+    },
+    {
+        id: "dproj-2",
+        title: "UI/UX Profile Designer",
+        client: "admin.desk@cit.edu.in",
+        totalValue: 100,
+        milestones: [
+            { id: "m1", label: "Wireframes & user flow diagrams", done: true },
+            { id: "m2", label: "High-fidelity Figma mockups", done: true },
+            { id: "m3", label: "Interactive prototype states", done: false }
+        ]
+    }
+];
+
+function loadDashboardProjects() {
+    const saved = JSON.parse(localStorage.getItem('campus_dashboard_projects'));
+    return saved && saved.length ? saved : defaultDashboardProjects;
+}
+
+function persistDashboardProjects(projects) {
+    localStorage.setItem('campus_dashboard_projects', JSON.stringify(projects));
+}
+
+function computeMilestoneProgress(project) {
+    const total = project.milestones.length || 1;
+    const doneCount = project.milestones.filter(m => m.done).length;
+    const percent = Math.round((doneCount / total) * 100);
+    const escrowPayout = Math.round((project.totalValue * percent) / 100);
+    return { doneCount, total, percent, escrowPayout };
+}
+
+function renderFreelancerDashboard() {
+    const container = document.getElementById("dashboardGigCardsContainer");
+    if (!container) return; // not on my-gigs.html
+
+    const projects = loadDashboardProjects();
+    container.innerHTML = "";
+
+    projects.forEach(project => {
+        const { doneCount, total, percent, escrowPayout } = computeMilestoneProgress(project);
+
+        const card = document.createElement("div");
+        card.className = "fl-dashboard-card";
+        card.dataset.projectId = project.id;
+
+        const milestonesHtml = project.milestones.map(m => `
+            <div class="fl-milestone-row ${m.done ? 'milestone-done' : ''}">
+                <input type="checkbox" data-milestone-checkbox="${project.id}:${m.id}" ${m.done ? "checked" : ""}>
+                <label>${m.label}</label>
+            </div>
+        `).join("");
+
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="margin:0; font-size:1.05rem; color:var(--text-primary);">${project.title}</h3>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Client: ${project.client}</span>
+                </div>
+                <span style="font-size:0.7rem; color:var(--highlight-blue); border:1px solid var(--border-color); padding:0.2rem 0.5rem; border-radius:4px;">Click to ${percent === 100 ? 'review' : 'expand'} milestones</span>
+            </div>
+
+            <div class="earnings-progress-wrap">
+                <div class="earnings-progress-tooltip" id="tooltip-${project.id}">
+                    ${percent}% complete &middot; Escrow payout: $${escrowPayout} of $${project.totalValue}
+                </div>
+                <div class="earnings-progress-track" id="progressTrack-${project.id}" data-project-id="${project.id}">
+                    <div class="earnings-progress-fill" id="progressFill-${project.id}" style="width:${percent}%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted); margin-top:0.3rem;">
+                    <span>${doneCount}/${total} milestones complete</span>
+                    <span>$${escrowPayout} / $${project.totalValue} earned</span>
+                </div>
+            </div>
+
+            <div class="fl-milestone-list" id="milestoneList-${project.id}">
+                ${milestonesHtml}
+            </div>
+        `;
+        container.appendChild(card);
+
+        // click on an active gig card -> expands its milestone task checklist
+        card.addEventListener("click", (event) => {
+            // Ignore clicks that originate from interactive children (checkbox/label/progress bar)
+            if (event.target.closest('.fl-milestone-list') || event.target.closest('.earnings-progress-wrap')) return;
+            document.getElementById(`milestoneList-${project.id}`).classList.toggle("expanded");
+        });
+
+        // mouseover on the earnings progress bar -> shows tooltip with exact % and escrow payout
+        const progressTrack = card.querySelector(`#progressTrack-${project.id}`);
+        const tooltip = card.querySelector(`#tooltip-${project.id}`);
+        if (progressTrack && tooltip) {
+            progressTrack.addEventListener("mouseover", () => tooltip.classList.add("visible"));
+            progressTrack.addEventListener("mouseout", () => tooltip.classList.remove("visible"));
+
+            // custom 'change' listener used to recalculate overall progress (see checkbox handler below)
+            progressTrack.addEventListener("change", () => {
+                recalculateProjectProgress(project.id);
+            });
+        }
+
+        // click on "Mark Milestone Complete" checkbox -> updates milestone bar & triggers recalculation
+        card.querySelectorAll("[data-milestone-checkbox]").forEach(checkbox => {
+            checkbox.addEventListener("change", (event) => {
+                const [projId, milestoneId] = event.target.getAttribute("data-milestone-checkbox").split(":");
+                const allProjects = loadDashboardProjects();
+                const proj = allProjects.find(p => p.id === projId);
+                if (!proj) return;
+                const milestone = proj.milestones.find(m => m.id === milestoneId);
+                if (!milestone) return;
+
+                milestone.done = event.target.checked;
+                persistDashboardProjects(allProjects);
+
+                const row = event.target.closest(".fl-milestone-row");
+                if (row) row.classList.toggle("milestone-done", milestone.done);
+
+                // Manually dispatch a 'change' event on the progress track so its dedicated
+                // listener (registered above) recalculates the overall project progress.
+                const trackEl = document.getElementById(`progressTrack-${projId}`);
+                if (trackEl) trackEl.dispatchEvent(new Event("change", { bubbles: false }));
+            });
+        });
+    });
+}
+
+function recalculateProjectProgress(projectId) {
+    const allProjects = loadDashboardProjects();
+    const project = allProjects.find(p => p.id === projectId);
+    if (!project) return;
+
+    const { doneCount, total, percent, escrowPayout } = computeMilestoneProgress(project);
+
+    const fillEl = document.getElementById(`progressFill-${projectId}`);
+    const tooltipEl = document.getElementById(`tooltip-${projectId}`);
+    if (fillEl) fillEl.style.width = percent + "%";
+    if (tooltipEl) tooltipEl.textContent = `${percent}% complete · Escrow payout: $${escrowPayout} of $${project.totalValue}`;
+
+    const card = document.querySelector(`.fl-dashboard-card[data-project-id="${projectId}"]`);
+    const summarySpans = card ? card.querySelectorAll(".earnings-progress-wrap > div:last-child span") : [];
+    if (summarySpans.length === 2) {
+        summarySpans[0].textContent = `${doneCount}/${total} milestones complete`;
+        summarySpans[1].textContent = `$${escrowPayout} / $${project.totalValue} earned`;
+    }
+}
+
+/* --- Small fix-up alias: the "Clear Data" button in profile.html references this name --- */
+function clearProfileStorage() {
+    if (typeof clearCachedRegistration === "function") {
+        clearCachedRegistration();
+    }
 }

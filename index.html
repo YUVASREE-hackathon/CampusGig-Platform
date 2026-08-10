@@ -275,9 +275,10 @@
             </span>
         </div>
         <nav class="nav-links" style="display: flex; align-items: center; gap: 1rem;">
-            <a href="index.html" id="navBrowse">Browse Gigs</a>
+            <a href="index.html" id="navBrowse">Browse Gigs <span id="appliedGigsCounterBadge" class="applied-counter-badge" style="display:none;">0</span></a>
             <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
             <a href="post-job.html" id="navPost">Post Job</a>
+            <a href="skill-test.html" id="navSkillTest">Skill Test</a>
             <a href="profile.html" id="navProfile" class="active_page">Profile</a>
             <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;" data-tooltip="Destroy session keys and exit safely">Logout</a>
             
@@ -388,6 +389,29 @@
             </div>
         </section>
 
+        <!-- CLIENT BRIEF PITCH / VIDEO PLAYER -->
+        <section id="clientBriefSection" style="margin-bottom: 3rem;">
+            <h2 style="margin-bottom: 1.2rem; color: var(--text-primary, #f8fafc); font-size: 1.5rem;">📽️ Client Brief Pitch Preview</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1rem;">Watch the client's project brief before applying. Custom playback controls built with native <code>&lt;video&gt;</code> event handling.</p>
+            <div class="media-player-wrapper">
+                <video id="briefVideoPlayer" class="media-player-video" preload="metadata" poster="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80">
+                    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="media-player-controls">
+                    <button id="mediaPlayPauseBtn" class="media-play-btn" aria-label="Play or pause the client brief video" data-tooltip="Toggle playback">▶</button>
+                    <div class="media-progress-track" id="mediaProgressTrack" data-tooltip="Click anywhere to seek">
+                        <div class="media-progress-fill" id="mediaProgressFill"></div>
+                    </div>
+                    <span class="media-time-label" id="mediaTimeLabel">0:00 / 0:00</span>
+                    <div class="media-volume-row">
+                        <span aria-hidden="true">🔊</span>
+                        <input type="range" id="mediaVolumeSlider" min="0" max="1" step="0.05" value="1" data-tooltip="Adjust playback volume">
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="main_content_area" style="display: grid; grid-template-columns: 260px 1fr; gap: 2rem;">
             <aside class="sidebar_filters glassmorphism" style="padding: 1.5rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 10px;">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">Filters</h2>
@@ -425,6 +449,26 @@
                     <span class="view_options">View: Grid</span>
                 </div>
 
+                <!-- GIG SEARCH & CATEGORY FILTER BAR -->
+                <div class="gig-search-bar">
+                    <div class="gig-search-input-wrap">
+                        <input type="text" id="gigSearchInput" placeholder="Search gigs by title, skill, or keyword... (Enter to search)" data-tooltip="Type to filter results live, or press Enter to execute an explicit search">
+                    </div>
+                    <select id="gigCategorySelect" data-tooltip="Filter gigs by domain category">
+                        <option value="All">All Categories</option>
+                        <option value="Coding">Coding</option>
+                        <option value="Design">Design</option>
+                        <option value="Writing">Writing</option>
+                    </select>
+                    <select id="gigBudgetSelect" data-tooltip="Filter gigs by payout budget range">
+                        <option value="All">Any Budget</option>
+                        <option value="under50">Under $50</option>
+                        <option value="50to150">$50 - $150</option>
+                        <option value="over150">$150+</option>
+                    </select>
+                </div>
+                <div class="gig-search-result-count" id="gigSearchResultCount"></div>
+
                 <div class="gig_grid" id="liveFeedContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                     <div class="gig_card anim-card-hover" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); padding: 1.5rem; border-radius: 10px;">
                         <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Build a Python Data Scraper</h3>
@@ -441,6 +485,20 @@
                 </div>
             </section>
         </div>
+
+        <!-- GIG DISCUSSION & INQUIRY SECTION -->
+        <section class="discussion-section" id="gigDiscussionSection">
+            <h2 style="margin-bottom: 0.3rem; color: var(--text-primary, #f8fafc); font-size: 1.4rem;">💬 Gig Discussion &amp; Inquiry</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Ask questions about "<strong>Build a Python Data Scraper</strong>" — replies and edits update live without a page reload.</p>
+
+            <form id="discussionForm" class="discussion-form">
+                <input type="text" id="discussionNameInput" class="discussion-name-input" placeholder="Your name" required>
+                <textarea id="discussionMsgInput" class="discussion-msg-input" placeholder="Post a question or comment about this gig..." required></textarea>
+                <button type="submit" class="apply_btn" id="postCommentBtn">Post Comment</button>
+            </form>
+
+            <div id="discussionThreadContainer"></div>
+        </section>
 
         <!-- ROLE-ADAPTIVE LIVE STATISTICS GRID METRICS LAYER -->
         <section class="stats-grid" id="statisticsDisplayGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">

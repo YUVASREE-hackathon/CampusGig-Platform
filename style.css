@@ -681,3 +681,472 @@ body {
 .hidden {
     display: none !important;
 }
+
+/* ==========================================================================
+   NEW EVENT-DRIVEN FEATURES MODULE
+   Added for: Gig Catalog interactions, Media Player, Registration/Job Form,
+   Skill Assessment, Search & Filter, Discussion Board, Freelancer Dashboard
+   ========================================================================== */
+
+/* --- 1. GIG CATALOG: BOOKMARK STAR + HOVER PREVIEW OVERLAY --- */
+.gig-bookmark-star {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+    z-index: 5;
+    user-select: none;
+    line-height: 1;
+}
+.gig-bookmark-star:hover {
+    transform: scale(1.25);
+}
+.gig-bookmark-star.bookmarked {
+    color: #f59e0b;
+}
+
+.gig-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 14, 24, 0.96);
+    backdrop-filter: blur(2px);
+    color: #f1f5f9;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    z-index: 20;
+    pointer-events: none;
+    text-align: left;
+}
+.gig_card:hover .gig-hover-overlay,
+.gig-hover-overlay.force-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.gig-hover-overlay h4 {
+    color: var(--highlight-blue, #38bdf8);
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+}
+.gig-hover-overlay p {
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin: 0;
+}
+.gig-hover-overlay .overlay-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--highlight-blue, #38bdf8);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    margin-top: 0.4rem;
+    width: fit-content;
+}
+
+.applied-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--highlight-green, #00ff88);
+    color: #062b1a;
+    font-size: 0.68rem;
+    font-weight: 800;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+    transform: translateY(-1px);
+}
+
+/* --- 2. CUSTOM MEDIA PLAYER (CLIENT BRIEF PITCH) --- */
+.media-player-wrapper {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: var(--card-shadow);
+}
+.media-player-video {
+    width: 100%;
+    border-radius: 8px;
+    background: #000;
+    display: block;
+    max-height: 360px;
+}
+.media-player-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 0.9rem;
+    flex-wrap: wrap;
+}
+.media-play-btn {
+    background: linear-gradient(135deg, var(--highlight-blue, #38bdf8), var(--highlight-purple, #9333ea));
+    color: #fff;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+.media-play-btn:hover { transform: scale(1.08); }
+
+.media-progress-track {
+    flex: 1;
+    min-width: 140px;
+    height: 8px;
+    background: var(--input-bg);
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+.media-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--highlight-blue, #38bdf8), var(--highlight-purple, #9333ea));
+    border-radius: 999px;
+    transition: width 0.1s linear;
+}
+.media-time-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'Roboto Mono', monospace;
+    white-space: nowrap;
+}
+.media-volume-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.media-volume-row input[type="range"] {
+    width: 100px;
+    accent-color: var(--highlight-blue, #38bdf8);
+}
+
+/* --- 3. AUTH / REGISTRATION FORM LIVE VALIDATION --- */
+.field-error-msg {
+    font-size: 0.75rem;
+    color: #ff4a4a;
+    display: none;
+    margin-top: 0.3rem;
+}
+.field-error-msg.visible { display: block; }
+
+.field-success-msg {
+    font-size: 0.75rem;
+    color: var(--highlight-green, #22c55e);
+    display: none;
+    margin-top: 0.3rem;
+}
+.field-success-msg.visible { display: block; }
+
+.input-invalid { border-color: #ff4a4a !important; }
+.input-valid { border-color: var(--highlight-green, #22c55e) !important; }
+
+.auth-toast-confirm {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid var(--highlight-green, #22c55e);
+    color: var(--highlight-green, #22c55e);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+.auth-toast-confirm.visible { display: block; }
+
+/* --- 4. SKILL ASSESSMENT / QUIZ MODULE --- */
+.quiz-shell {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+}
+.quiz-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    color: var(--highlight-blue, #38bdf8);
+}
+.quiz-timer.time-critical { color: #ff4a4a; animation: pulseGlow 1s infinite; }
+.quiz-question-card {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+.quiz-question-card h4 { color: var(--text-primary); margin-bottom: 0.8rem; font-size: 0.98rem; }
+.quiz-option-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: background 0.2s ease;
+}
+.quiz-option-label:hover { background: rgba(56, 189, 248, 0.08); }
+.quiz-option-label input { width: auto !important; cursor: pointer; }
+.quiz-option-label.correct-answer { background: rgba(0,255,136,0.12); color: var(--highlight-green, #22c55e); font-weight: bold; }
+.quiz-option-label.wrong-answer { background: rgba(255,74,74,0.12); color: #ff4a4a; font-weight: bold; }
+.quiz-result-panel {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px dashed var(--highlight-blue, #38bdf8);
+    background: rgba(56, 189, 248, 0.06);
+    display: none;
+}
+.quiz-result-panel.visible { display: block; }
+.quiz-score-value { font-size: 2.4rem; font-weight: 800; color: var(--highlight-blue, #38bdf8); }
+
+/* --- 5. GIG SEARCH & CATEGORY FILTER BAR --- */
+.gig-search-bar {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+.gig-search-input-wrap {
+    flex: 2;
+    min-width: 220px;
+    position: relative;
+}
+.gig-search-input-wrap input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.6rem 0.9rem 0.6rem 2.2rem;
+    border-radius: 8px;
+    font-family: inherit;
+}
+.gig-search-input-wrap::before {
+    content: "🔎";
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+.gig-search-bar select {
+    flex: 1;
+    min-width: 160px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    font-family: inherit;
+    cursor: pointer;
+}
+.gig-search-result-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: -0.6rem 0 1rem 0;
+}
+
+/* --- 6. GIG DISCUSSION & INQUIRY SECTION --- */
+.discussion-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.6rem;
+    margin: 2.5rem 0;
+    box-shadow: var(--card-shadow);
+}
+.discussion-form {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+}
+.discussion-form input[type="text"], .discussion-form textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    font-family: inherit;
+}
+.discussion-form .discussion-name-input { flex: 1; min-width: 150px; }
+.discussion-form .discussion-msg-input { flex: 3; min-width: 220px; resize: vertical; min-height: 42px; }
+
+.comment-thread-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.9rem 0.2rem;
+}
+.comment-thread-item:last-child { border-bottom: none; }
+.comment-author-line {
+    font-size: 0.85rem;
+    color: var(--highlight-blue, #38bdf8);
+    font-weight: bold;
+}
+.comment-timestamp {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: 0.5rem;
+    font-weight: 400;
+}
+.comment-body-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+    line-height: 1.5;
+    cursor: text;
+}
+.comment-body-text[contenteditable="true"] {
+    outline: 1px dashed var(--highlight-blue, #38bdf8);
+    background: var(--input-bg);
+    padding: 0.4rem;
+    border-radius: 4px;
+}
+.comment-actions { margin-top: 0.4rem; display: flex; gap: 1rem; }
+.comment-reply-link {
+    font-size: 0.75rem;
+    color: var(--highlight-purple, #9333ea);
+    cursor: pointer;
+    font-weight: bold;
+    background: none;
+    border: none;
+    padding: 0;
+}
+.comment-reply-link:hover { text-decoration: underline; }
+.reply-input-box {
+    margin-top: 0.6rem;
+    margin-left: 1.2rem;
+    display: none;
+    gap: 0.5rem;
+}
+.reply-input-box.visible { display: flex; }
+.reply-input-box input {
+    flex: 1;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.82rem;
+}
+.nested-reply-item {
+    margin-left: 1.2rem;
+    padding: 0.5rem 0;
+    border-left: 2px solid var(--border-color);
+    padding-left: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+/* --- 7. FREELANCER DASHBOARD & EARNINGS TRACKER --- */
+.fl-dashboard-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.3rem;
+    margin-bottom: 1.2rem;
+    cursor: pointer;
+    transition: border-color 0.25s ease;
+}
+.fl-dashboard-card:hover { border-color: var(--highlight-blue, #38bdf8); }
+.fl-milestone-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+    margin-top: 0;
+}
+.fl-milestone-list.expanded {
+    max-height: 500px;
+    margin-top: 1rem;
+}
+.fl-milestone-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    border-top: 1px dashed var(--border-color);
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+}
+.fl-milestone-row input[type="checkbox"] { width: auto !important; cursor: pointer; }
+.fl-milestone-row.milestone-done { color: var(--highlight-green, #22c55e); text-decoration: line-through; }
+
+.earnings-progress-wrap {
+    position: relative;
+    margin-top: 0.5rem;
+}
+.earnings-progress-track {
+    width: 100%;
+    height: 12px;
+    background: var(--input-bg);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+.earnings-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--highlight-green, #22c55e), var(--highlight-blue, #38bdf8));
+    transition: width 0.4s ease;
+}
+.earnings-progress-tooltip {
+    position: absolute;
+    bottom: 130%;
+    left: 0;
+    background: rgba(15, 23, 42, 0.96);
+    color: #f8fafc;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: all 0.2s ease;
+    z-index: 40;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.earnings-progress-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}

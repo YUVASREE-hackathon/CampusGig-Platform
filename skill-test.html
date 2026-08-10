@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusGig - Skill Verification Assessment</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+
+    <header class="main-header glassmorphism">
+        <div class="logo">
+            CampusGig 🚀
+            <span style="font-size: 0.75rem; display: block; color: var(--text-muted); font-weight: 400; margin-top: 0.2rem;">
+                Connect. Work. Earn. | Student: YUVASREE I (Reg: 2303717620522061)
+            </span>
+        </div>
+        <nav class="nav-links" style="display: flex; align-items: center;">
+            <a href="index.html" id="navBrowse">Browse Gigs <span id="appliedGigsCounterBadge" class="applied-counter-badge" style="display:none;">0</span></a>
+            <a href="my-gigs.html" id="navMyGigs">My Gigs</a>
+            <a href="post-job.html" id="navPost">Post Job</a>
+            <a href="skill-test.html" id="navSkillTest" class="active_page">Skill Test</a>
+            <a href="profile.html" id="navProfile">Profile</a>
+            <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
+
+            <button class="theme_toggle_btn" onclick="toggleSystemTheme()" aria-label="Toggle interface theme">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="banner animation_gradient_text" style="margin-bottom: 2rem;">
+            <h1>Skill Verification <span class="highlight_primary">Assessment</span></h1>
+            <p>Prove your technical fundamentals to unlock verified freelancer badge status on your profile.</p>
+        </section>
+
+        <div class="quiz-shell" id="quizShell">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.6rem; margin-bottom:1.2rem;">
+                <h2 style="margin:0; color: var(--text-primary); font-size: 1.3rem;">🧠 Coding Verification Module</h2>
+                <span class="quiz-timer" id="quizTimerDisplay">⏱ 01:30</span>
+            </div>
+
+            <p id="quizIntroText" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.2rem;">
+                You'll have <strong>90 seconds</strong> once the assessment begins. Answer all multiple-choice questions before time runs out —
+                the test auto-submits automatically when the countdown reaches zero.
+            </p>
+
+            <button class="apply_btn" id="startAssessmentBtn" data-tooltip="Begin the countdown timer and unlock the questions">
+                ▶ Start Assessment
+            </button>
+
+            <div id="quizQuestionsContainer" style="margin-top:1.5rem;"></div>
+
+            <button class="apply_btn" id="submitTestBtn" style="width:100%; margin-top:0.5rem; display:none;">
+                ✅ Submit Test
+            </button>
+
+            <div class="quiz-result-panel" id="quizResultPanel">
+                <div class="quiz-score-value" id="quizScoreValue">0/0</div>
+                <p id="quizResultMessage" style="color: var(--text-secondary); margin-top: 0.5rem;"></p>
+                <button class="apply_btn" id="retakeQuizBtn" style="margin-top:1rem;">🔁 Retake Assessment</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 CampusGig Portal | Designed by YUVA (Register No: 2303717620522061)</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

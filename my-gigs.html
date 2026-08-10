@@ -17,9 +17,10 @@
             </span>
         </div>
         <nav class="nav-links" style="display: flex; align-items: center;">
-            <a href="index.html" id="navBrowse">Browse Gigs</a>
+            <a href="index.html" id="navBrowse">Browse Gigs <span id="appliedGigsCounterBadge" class="applied-counter-badge" style="display:none;">0</span></a>
             <a href="my-gigs.html" id="navMyGigs" class="active_page">My Gigs</a>
             <a href="post-job.html" id="navPost">Post Job</a>
+            <a href="skill-test.html" id="navSkillTest">Skill Test</a>
             <a href="profile.html" id="navProfile">Profile</a>
             <a href="#" onclick="processLogout()" style="color: #ff4a4a !important;">Logout</a>
             
@@ -88,6 +89,15 @@
         </div>
 
         <div id="dynamicApplicantJobsTracker" style="margin-top: 2rem;"></div>
+
+        <!-- FREELANCER DASHBOARD & EARNINGS PROGRESS TRACKER -->
+        <section id="freelancerDashboardSection" style="margin-top: 3rem;">
+            <h2 style="color: var(--text-primary); font-size: 1.4rem; margin-bottom: 0.3rem;">📊 Freelancer Dashboard &amp; Earnings Tracker</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;">
+                Click a project card to expand its milestone checklist. Hover any earnings bar for exact completion % and escrow payout.
+            </p>
+            <div id="dashboardGigCardsContainer"></div>
+        </section>
     </main>
 
     <footer class="main-footer">
